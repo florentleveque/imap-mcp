@@ -4,7 +4,11 @@
  * GreenMail; the integration suite checks the real thing.
  */
 
-import type { ImapFlowOptions } from 'imapflow';
+import { Readable } from 'node:stream';
+
+import type { FetchQueryObject, ImapFlowOptions } from 'imapflow';
+
+import type { FakeMessage } from '../fixtures.js';
 
 export class FakeMailClient {
   readonly calls: string[] = [];
@@ -14,6 +18,10 @@ export class FakeMailClient {
   logoutError: unknown;
 
   folders: unknown[] = [];
+  /** Stored in UID order, as a server returns them. */
+  messages: FakeMessage[] = [];
+  /** What SEARCH answers; the integration suite checks the real matching. */
+  searchResult: number[] | false = [];
 
   constructor(readonly options: ImapFlowOptions = {}) {}
 
@@ -39,6 +47,30 @@ export class FakeMailClient {
   async list(): Promise<unknown[]> {
     this.calls.push('list');
     return this.folders;
+  }
+
+  async search(query: unknown, options: unknown): Promise<number[] | false> {
+    this.calls.push(`search ${JSON.stringify(query)} ${JSON.stringify(options)}`);
+    return this.searchResult;
+  }
+
+  async fetchAll(range: number[], query: FetchQueryObject, options: unknown) {
+    const fields = Object.keys(query).filter((key) => query[key as keyof FetchQueryObject]);
+    this.calls.push(
+      `fetch ${JSON.stringify(range)} ${fields.join(',')} ${JSON.stringify(options)}`,
+    );
+    const wanted = new Set(range);
+    return this.messages
+      .filter((message) => wanted.has(message.uid))
+      .map(({ parts: _parts, ...message }) => ({ seq: message.uid, ...message }));
+  }
+
+  async download(uid: string, part: string, options: { maxBytes?: number }) {
+    this.calls.push(`download ${uid} ${part} ${JSON.stringify(options)}`);
+    const stored = this.messages.find((message) => String(message.uid) === uid)?.parts[part];
+    if (!stored) return {};
+    const content = stored.content.subarray(0, options.maxBytes ?? stored.content.length);
+    return { meta: stored.meta, content: Readable.from([content]) };
   }
 
   async getMailboxLock(path: string, options: unknown): Promise<{ release(): void }> {

@@ -45,7 +45,8 @@ export function fixtureMessage(
   return {
     uid,
     flags: new Set(flags),
-    internalDate: internalDate ?? date ?? new Date(0),
+    // Received a minute after it was sent, so a test can tell the two apart.
+    internalDate: internalDate ?? new Date((date?.getTime() ?? 0) + 60_000),
     envelope: { ...message.envelope, date } as MessageEnvelopeObject,
     bodyStructure: structuredClone(message.bodyStructure),
     size: message.size,
