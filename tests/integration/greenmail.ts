@@ -6,6 +6,9 @@
 
 import { randomUUID } from 'node:crypto';
 import { readFileSync } from 'node:fs';
+import { mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 import { ImapFlow } from 'imapflow';
 import { inject } from 'vitest';
@@ -13,6 +16,7 @@ import { inject } from 'vitest';
 import type { Account } from '../../src/config.js';
 import { openImapFlow } from '../../src/imap/client.js';
 import type { SessionDeps } from '../../src/imap/session.js';
+import { LoopbackTransport, openSession } from '../unit/server-harness.js';
 
 export const testCaPath = new URL('fixtures/tls/ca.pem', import.meta.url).pathname;
 export const testCa = readFileSync(testCaPath, 'utf8');
@@ -102,4 +106,36 @@ export function accountFor(user: TestUser, overrides: Partial<Account> = {}): Ac
 /** Session dependencies that answer with `user`'s password, through the real ImapFlow. */
 export function sessionDeps(user: TestUser, password = user.password): SessionDeps {
   return { passwords: async () => password, openClient: openImapFlow };
+}
+
+/**
+ * An MCP server whose configuration names one account, "test", for `user` on
+ * GreenMail: tools run end to end, from `tools/call` to the IMAP server.
+ */
+export async function toolsFor(user: TestUser, attachments?: Record<string, unknown>) {
+  const dir = await mkdtemp(join(tmpdir(), 'imap-mcp-it-'));
+  const configPath = join(dir, 'config.json');
+  const { name: _name, ...account } = accountFor(user);
+  await writeFile(configPath, JSON.stringify({ accounts: { test: account }, attachments }));
+  const transport = new LoopbackTransport();
+  await openSession(transport, { configPath, session: sessionDeps(user) });
+
+  const call = async (name: string, args: Record<string, unknown> = {}) => {
+    const response = await transport.request('tools/call', {
+      name,
+      arguments: { account: 'test', ...args },
+    });
+    if (response.error) throw new Error(`tools/call failed: ${response.error.message}`);
+    return response.result as { content: { type: string; text?: string }[]; isError?: boolean };
+  };
+  return {
+    dir,
+    call,
+    async json(name: string, args: Record<string, unknown> = {}): Promise<unknown> {
+      const result = await call(name, args);
+      if (result.isError) throw new Error(`${name} failed: ${result.content[0]?.text}`);
+      return JSON.parse(result.content[0]?.text ?? '');
+    },
+    cleanup: () => rm(dir, { recursive: true, force: true }),
+  };
 }

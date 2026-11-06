@@ -1,0 +1,43 @@
+[
+  {
+    "name": "list-accounts",
+    "title": "List accounts",
+    "description": "List the mail accounts this server is configured for: name, IMAP host, port, TLS mode (tls or starttls) and user name. Call it first: the other tools take the name as their `account` parameter. Reads the configuration file only and contacts no mail server.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {},
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "list-folders",
+    "title": "List folders",
+    "description": "List the folders of an account: path (the `folder` parameter of the other tools), display name, whether it is subscribed, whether it can be opened, and its special use (\\Sent, \\Trash, \\Drafts, \\Junk, \\Archive, \\All, \\Flagged) when the server declares one. A folder without a declared special use has none, whatever its name.",
+    "inputSchema": {
+      "type": "object",
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "account": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Account name, as list-accounts returns it."
+        }
+      },
+      "required": ["account"],
+      "additionalProperties": false
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": true
+    }
+  }
+]

@@ -13,6 +13,8 @@ export class FakeMailClient {
   lockError: unknown;
   logoutError: unknown;
 
+  folders: unknown[] = [];
+
   constructor(readonly options: ImapFlowOptions = {}) {}
 
   on(event: string, listener: (error: Error) => void): this {
@@ -32,6 +34,11 @@ export class FakeMailClient {
 
   close(): void {
     this.calls.push('close');
+  }
+
+  async list(): Promise<unknown[]> {
+    this.calls.push('list');
+    return this.folders;
   }
 
   async getMailboxLock(path: string, options: unknown): Promise<{ release(): void }> {
