@@ -1,0 +1,76 @@
+import { mkdir, open, rm, stat } from 'node:fs/promises';
+import { extname, join } from 'node:path';
+import type { Readable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
+
+// Windows device names, reserved whatever the extension.
+const RESERVED = /^(con|prn|aux|nul|com\d|lpt\d)(\..*)?$/i;
+
+// Most file systems cap a name at 255 bytes; keep a margin for " (n)".
+const MAX_BYTES = 200;
+
+// Refused in Windows file names.
+const FORBIDDEN = new Set('<>:"|?*');
+const PATH_SEPARATORS = /[/\\]/;
+const DOTS_ONLY = /^\.*$/;
+const EDGE_DOTS_AND_SPACES = /^[.\s]+|[.\s]+$/g;
+
+const isUnsafe = (char: string): boolean => {
+  const code = char.charCodeAt(0);
+  return code < 0x20 || code === 0x7f || FORBIDDEN.has(char);
+};
+
+function shorten(name: string): string {
+  const ext = extname(name);
+  const stem = Array.from(name.slice(0, name.length - ext.length));
+  while (Buffer.byteLength(stem.join('') + ext) > MAX_BYTES) stem.pop();
+  return stem.join('') + ext;
+}
+
+/**
+ * A file name from a sender, made safe to create in the attachments folder on
+ * any system: no path, no control or reserved character, no device name, no
+ * leading dot. `fallback` names what nothing usable is left of.
+ */
+export function safeFileName(name: string | undefined, fallback: string): string {
+  const safe = Array.from(name ?? '', (char) => (isUnsafe(char) ? '_' : char))
+    .join('')
+    .split(PATH_SEPARATORS)
+    .filter((piece) => !DOTS_ONLY.test(piece))
+    .join('_')
+    .replace(EDGE_DOTS_AND_SPACES, '');
+  if (safe === '') return fallback;
+  return shorten(RESERVED.test(safe) ? `_${safe}` : safe);
+}
+
+/**
+ * Write `content` to `directory/name`, never over an existing file: the name
+ * gets " (1)", " (2)"... until one is free. A failed download leaves no file.
+ */
+export async function saveUnique(
+  directory: string,
+  name: string,
+  content: Readable,
+): Promise<{ path: string; size: number }> {
+  await mkdir(directory, { recursive: true });
+  const ext = extname(name);
+  const stem = name.slice(0, name.length - ext.length);
+  for (let copy = 0; ; copy++) {
+    const path = join(directory, copy === 0 ? name : `${stem} (${copy})${ext}`);
+    let file: Awaited<ReturnType<typeof open>>;
+    try {
+      // `wx` fails when the file exists, atomically: no check-then-write race.
+      file = await open(path, 'wx');
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === 'EEXIST') continue;
+      throw error;
+    }
+    try {
+      await pipeline(content, file.createWriteStream());
+    } catch (error) {
+      await rm(path);
+      throw error;
+    }
+    return { path, size: (await stat(path)).size };
+  }
+}

@@ -28,6 +28,11 @@ export interface MessageContent extends Omit<MessageSummary, 'hasAttachments'> {
 
 const CRLF = /\r\n/g;
 
+export const missingMessage = (folder: string, uid: number): Error =>
+  new Error(
+    `No message with UID ${uid} in folder "${folder}". list-messages and search-messages give the UIDs.`,
+  );
+
 async function downloadText(
   client: MailClient,
   uid: number,
@@ -75,11 +80,7 @@ export async function readMessage(
   uid: number,
 ): Promise<MessageContent> {
   const [message] = await client.fetchAll([uid], SUMMARY_FIELDS, { uid: true });
-  if (!message) {
-    throw new Error(
-      `No message with UID ${uid} in folder "${folder}". list-messages and search-messages give the UIDs.`,
-    );
-  }
+  if (!message) throw missingMessage(folder, uid);
   const { hasAttachments: _hasAttachments, ...summary } = summarize(message);
   const { envelope = {}, bodyStructure } = message;
   const parts = bodyStructure ? messageParts(bodyStructure) : { attachments: [] };

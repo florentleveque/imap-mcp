@@ -1,4 +1,5 @@
 import { accountTools } from './accounts.js';
+import { attachmentTools } from './attachments.js';
 import type { ToolDefinition } from './definitions.js';
 import { folderTools } from './folders.js';
 import { messageTools } from './messages.js';
@@ -10,4 +11,5 @@ export const toolDefinitions: ToolDefinition[] = [
   ...folderTools,
   ...messageTools,
   ...readTools,
+  ...attachmentTools,
 ];
