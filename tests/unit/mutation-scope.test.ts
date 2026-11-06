@@ -223,11 +223,12 @@ describe('the mutation baseline cache key', () => {
   // verdicts against fixtures that no longer exist. Hence a test, not a document.
   const repoRoot = fileURLToPath(new URL('../../', import.meta.url));
 
-  // `tests/functional/` is exempt by path: `vitest.config.ts` loads only
-  // `tests/unit/**/*.test.ts`, so nothing in that harness can change a verdict.
-  // It also records a report per scenario run, and hashing those would discard
-  // the baseline every time someone records one.
-  const EXEMPT = new Set(['tests/functional']);
+  // `tests/functional/` and `tests/integration/` are exempt by path:
+  // `vitest.config.ts` loads only `tests/unit/**/*.test.ts`, so nothing in
+  // either can change a verdict (the integration suite has its own config).
+  // The functional harness also records a report per scenario run, and hashing
+  // those would discard the baseline every time someone records one.
+  const EXEMPT = new Set(['tests/functional', 'tests/integration']);
 
   // Every remaining file, whatever its extension, not just `.ts`. Filtering by
   // extension would miss the case this exists to catch: a JSON fixture or an
