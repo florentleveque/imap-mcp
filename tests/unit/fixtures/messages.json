@@ -1,0 +1,780 @@
+{
+  "plain": {
+    "envelope": {
+      "date": "2026-11-02T09:00:00.000Z",
+      "subject": "Plain text",
+      "from": [
+        {
+          "name": "Alice Example",
+          "address": "alice@example.test"
+        }
+      ],
+      "sender": [
+        {
+          "name": "Alice Example",
+          "address": "alice@example.test"
+        }
+      ],
+      "replyTo": [
+        {
+          "name": "Alice Example",
+          "address": "alice@example.test"
+        }
+      ],
+      "to": [
+        {
+          "name": "Reader",
+          "address": "reader@example.test"
+        }
+      ],
+      "messageId": "<plain@example.test>"
+    },
+    "bodyStructure": {
+      "type": "text/plain",
+      "parameters": {
+        "charset": "utf-8"
+      },
+      "encoding": "quoted-printable",
+      "size": 313,
+      "lineCount": 12
+    },
+    "size": 313,
+    "parts": {
+      "1": {
+        "meta": {
+          "expectedSize": 313,
+          "contentType": "text/plain",
+          "charset": "utf-8",
+          "encoding": "quoted-printable"
+        },
+        "content": "Q2Fmw6kgYXQgbmluZS4NClNlY29uZCBsaW5lLg=="
+      }
+    }
+  },
+  "html-only": {
+    "envelope": {
+      "date": "2026-11-02T10:00:00.000Z",
+      "subject": "HTML only",
+      "from": [
+        {
+          "name": "News",
+          "address": "news@example.test"
+        }
+      ],
+      "sender": [
+        {
+          "name": "News",
+          "address": "news@example.test"
+        }
+      ],
+      "replyTo": [
+        {
+          "name": "News",
+          "address": "news@example.test"
+        }
+      ],
+      "to": [
+        {
+          "name": "",
+          "address": "reader@example.test"
+        }
+      ],
+      "messageId": "<html-only@example.test>"
+    },
+    "bodyStructure": {
+      "type": "text/html",
+      "parameters": {
+        "charset": "utf-8"
+      },
+      "encoding": "7bit",
+      "size": 355,
+      "lineCount": 10
+    },
+    "size": 355,
+    "parts": {
+      "1": {
+        "meta": {
+          "expectedSize": 355,
+          "contentType": "text/html",
+          "charset": "utf-8"
+        },
+        "content": "PGh0bWw+PGJvZHk+PGgxPldlZWtseSBuZXdzPC9oMT48cD5SZWFkIDxhIGhyZWY9Imh0dHBzOi8vZXhhbXBsZS50ZXN0L24iPnRoZSBpc3N1ZTwvYT4uPC9wPjxpbWcgc3JjPSJjaWQ6bG9nbyIgYWx0PSJsb2dvIj48L2JvZHk+PC9odG1sPg=="
+      }
+    }
+  },
+  "alternative": {
+    "envelope": {
+      "date": "2026-11-02T11:00:00.000Z",
+      "subject": "Alternative",
+      "from": [
+        {
+          "name": "Bob",
+          "address": "bob@example.test"
+        }
+      ],
+      "sender": [
+        {
+          "name": "Bob",
+          "address": "bob@example.test"
+        }
+      ],
+      "replyTo": [
+        {
+          "name": "",
+          "address": "replies@example.test"
+        }
+      ],
+      "to": [
+        {
+          "name": "",
+          "address": "reader@example.test"
+        }
+      ],
+      "cc": [
+        {
+          "name": "Carol",
+          "address": "carol@example.test"
+        }
+      ],
+      "messageId": "<alternative@example.test>"
+    },
+    "bodyStructure": {
+      "childNodes": [
+        {
+          "part": "1",
+          "type": "text/plain",
+          "parameters": {
+            "charset": "utf-8"
+          },
+          "encoding": "7bit",
+          "size": 57,
+          "lineCount": 2
+        },
+        {
+          "part": "2",
+          "type": "text/html",
+          "parameters": {
+            "charset": "utf-8"
+          },
+          "encoding": "7bit",
+          "size": 62,
+          "lineCount": 2
+        }
+      ],
+      "type": "multipart/alternative",
+      "parameters": {
+        "boundary": "alt"
+      }
+    },
+    "size": 442,
+    "parts": {
+      "1": {
+        "meta": {
+          "expectedSize": 442,
+          "contentType": "text/plain",
+          "charset": "utf-8"
+        },
+        "content": "UGxhaW4gdmVyc2lvbi4="
+      },
+      "2": {
+        "meta": {
+          "expectedSize": 442,
+          "contentType": "text/html",
+          "charset": "utf-8"
+        },
+        "content": "PHA+SFRNTCB2ZXJzaW9uLjwvcD4="
+      }
+    }
+  },
+  "attachment": {
+    "envelope": {
+      "date": "2026-11-02T12:00:00.000Z",
+      "subject": "Report attached",
+      "from": [
+        {
+          "name": "Alice Example",
+          "address": "alice@example.test"
+        }
+      ],
+      "sender": [
+        {
+          "name": "Alice Example",
+          "address": "alice@example.test"
+        }
+      ],
+      "replyTo": [
+        {
+          "name": "Alice Example",
+          "address": "alice@example.test"
+        }
+      ],
+      "to": [
+        {
+          "name": "",
+          "address": "reader@example.test"
+        }
+      ],
+      "messageId": "<attachment@example.test>"
+    },
+    "bodyStructure": {
+      "childNodes": [
+        {
+          "part": "1",
+          "type": "text/plain",
+          "parameters": {
+            "charset": "utf-8"
+          },
+          "encoding": "7bit",
+          "size": 58,
+          "lineCount": 2
+        },
+        {
+          "part": "2",
+          "type": "application/pdf",
+          "parameters": {
+            "name": "report.pdf"
+          },
+          "encoding": "base64",
+          "size": 183,
+          "disposition": "attachment",
+          "dispositionParameters": {
+            "filename": "report.pdf"
+          }
+        }
+      ],
+      "type": "multipart/mixed",
+      "parameters": {
+        "boundary": "mix"
+      }
+    },
+    "size": 509,
+    "parts": {
+      "1": {
+        "meta": {
+          "expectedSize": 509,
+          "contentType": "text/plain",
+          "charset": "utf-8"
+        },
+        "content": "U2VlIHRoZSByZXBvcnQu"
+      },
+      "2": {
+        "meta": {
+          "expectedSize": 509,
+          "contentType": "application/pdf",
+          "encoding": "base64",
+          "disposition": "attachment",
+          "filename": "report.pdf"
+        },
+        "content": "JVBERi0xLjQgc3ludGhldGljIHRlc3QgcmVwb3J0"
+      }
+    }
+  },
+  "inline-named": {
+    "envelope": {
+      "date": "2026-11-02T13:00:00.000Z",
+      "subject": "Inline photo",
+      "from": [
+        {
+          "name": "Alice Example",
+          "address": "alice@example.test"
+        }
+      ],
+      "sender": [
+        {
+          "name": "Alice Example",
+          "address": "alice@example.test"
+        }
+      ],
+      "replyTo": [
+        {
+          "name": "Alice Example",
+          "address": "alice@example.test"
+        }
+      ],
+      "to": [
+        {
+          "name": "",
+          "address": "reader@example.test"
+        }
+      ],
+      "messageId": "<inline-named@example.test>"
+    },
+    "bodyStructure": {
+      "childNodes": [
+        {
+          "part": "1",
+          "type": "text/plain",
+          "parameters": {
+            "charset": "utf-8"
+          },
+          "encoding": "7bit",
+          "size": 51,
+          "lineCount": 2
+        },
+        {
+          "part": "2",
+          "type": "image/png",
+          "encoding": "base64",
+          "size": 209,
+          "disposition": "inline",
+          "dispositionParameters": {
+            "filename": "photo.png"
+          }
+        }
+      ],
+      "type": "multipart/mixed",
+      "parameters": {
+        "boundary": "mix"
+      }
+    },
+    "size": 527,
+    "parts": {
+      "1": {
+        "meta": {
+          "expectedSize": 527,
+          "contentType": "text/plain",
+          "charset": "utf-8"
+        },
+        "content": "QSBwaG90by4="
+      },
+      "2": {
+        "meta": {
+          "expectedSize": 527,
+          "contentType": "image/png",
+          "encoding": "base64",
+          "disposition": "inline",
+          "filename": "photo.png"
+        },
+        "content": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+      }
+    }
+  },
+  "no-disposition": {
+    "envelope": {
+      "date": "2026-11-02T14:00:00.000Z",
+      "subject": "Data file",
+      "from": [
+        {
+          "name": "Alice Example",
+          "address": "alice@example.test"
+        }
+      ],
+      "sender": [
+        {
+          "name": "Alice Example",
+          "address": "alice@example.test"
+        }
+      ],
+      "replyTo": [
+        {
+          "name": "Alice Example",
+          "address": "alice@example.test"
+        }
+      ],
+      "to": [
+        {
+          "name": "",
+          "address": "reader@example.test"
+        }
+      ],
+      "messageId": "<no-disposition@example.test>"
+    },
+    "bodyStructure": {
+      "childNodes": [
+        {
+          "part": "1",
+          "type": "text/plain",
+          "parameters": {
+            "charset": "utf-8"
+          },
+          "encoding": "7bit",
+          "size": 52,
+          "lineCount": 2
+        },
+        {
+          "part": "2",
+          "type": "application/octet-stream",
+          "parameters": {
+            "name": "data.bin"
+          },
+          "encoding": "base64",
+          "size": 122
+        }
+      ],
+      "type": "multipart/mixed",
+      "parameters": {
+        "boundary": "mix"
+      }
+    },
+    "size": 440,
+    "parts": {
+      "1": {
+        "meta": {
+          "expectedSize": 440,
+          "contentType": "text/plain",
+          "charset": "utf-8"
+        },
+        "content": "UmF3IGRhdGEu"
+      },
+      "2": {
+        "meta": {
+          "expectedSize": 440,
+          "contentType": "application/octet-stream",
+          "encoding": "base64",
+          "filename": "data.bin"
+        },
+        "content": "YmluYXJ5LWlzaCB0ZXN0IGRhdGE="
+      }
+    }
+  },
+  "related": {
+    "envelope": {
+      "date": "2026-11-02T15:00:00.000Z",
+      "subject": "Embedded logo",
+      "from": [
+        {
+          "name": "News",
+          "address": "news@example.test"
+        }
+      ],
+      "sender": [
+        {
+          "name": "News",
+          "address": "news@example.test"
+        }
+      ],
+      "replyTo": [
+        {
+          "name": "News",
+          "address": "news@example.test"
+        }
+      ],
+      "to": [
+        {
+          "name": "",
+          "address": "reader@example.test"
+        }
+      ],
+      "messageId": "<related@example.test>"
+    },
+    "bodyStructure": {
+      "childNodes": [
+        {
+          "part": "1",
+          "type": "text/html",
+          "parameters": {
+            "charset": "utf-8"
+          },
+          "encoding": "7bit",
+          "size": 88,
+          "lineCount": 2
+        },
+        {
+          "part": "2",
+          "type": "image/png",
+          "id": "<logo@example.test>",
+          "encoding": "base64",
+          "size": 220,
+          "disposition": "inline"
+        }
+      ],
+      "type": "multipart/related",
+      "parameters": {
+        "boundary": "rel"
+      }
+    },
+    "size": 563,
+    "parts": {
+      "1": {
+        "meta": {
+          "expectedSize": 563,
+          "contentType": "text/html",
+          "charset": "utf-8"
+        },
+        "content": "PHA+TG9nbzogPGltZyBzcmM9ImNpZDpsb2dvQGV4YW1wbGUudGVzdCI+PC9wPg=="
+      },
+      "2": {
+        "meta": {
+          "expectedSize": 563,
+          "contentType": "image/png",
+          "encoding": "base64",
+          "disposition": "inline"
+        },
+        "content": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+      }
+    }
+  },
+  "forwarded": {
+    "envelope": {
+      "date": "2026-11-02T16:00:00.000Z",
+      "subject": "Fwd: Original",
+      "from": [
+        {
+          "name": "Bob",
+          "address": "bob@example.test"
+        }
+      ],
+      "sender": [
+        {
+          "name": "Bob",
+          "address": "bob@example.test"
+        }
+      ],
+      "replyTo": [
+        {
+          "name": "Bob",
+          "address": "bob@example.test"
+        }
+      ],
+      "to": [
+        {
+          "name": "",
+          "address": "reader@example.test"
+        }
+      ],
+      "messageId": "<forwarded@example.test>"
+    },
+    "bodyStructure": {
+      "childNodes": [
+        {
+          "part": "1",
+          "type": "text/plain",
+          "parameters": {
+            "charset": "utf-8"
+          },
+          "encoding": "7bit",
+          "size": 59,
+          "lineCount": 2
+        },
+        {
+          "part": "2",
+          "type": "message/rfc822",
+          "encoding": "7bit",
+          "size": 208,
+          "envelope": {
+            "date": "2026-11-01T08:00:00.000Z",
+            "subject": "Original",
+            "from": [
+              {
+                "name": "Dave",
+                "address": "dave@example.test"
+              }
+            ],
+            "sender": [
+              {
+                "name": "Dave",
+                "address": "dave@example.test"
+              }
+            ],
+            "replyTo": [
+              {
+                "name": "Dave",
+                "address": "dave@example.test"
+              }
+            ],
+            "to": [
+              {
+                "name": "",
+                "address": "bob@example.test"
+              }
+            ]
+          },
+          "childNodes": [
+            {
+              "part": "2",
+              "type": "text/plain",
+              "parameters": {
+                "charset": "utf-8"
+              },
+              "encoding": "7bit",
+              "size": 176,
+              "lineCount": 6
+            }
+          ],
+          "lineCount": 8
+        }
+      ],
+      "type": "multipart/mixed",
+      "parameters": {
+        "boundary": "mix"
+      }
+    },
+    "size": 520,
+    "parts": {
+      "1": {
+        "meta": {
+          "expectedSize": 520,
+          "contentType": "text/plain",
+          "charset": "utf-8"
+        },
+        "content": "Rm9yd2FyZGluZyB0aGlzLg=="
+      },
+      "2": {
+        "meta": {
+          "expectedSize": 520,
+          "contentType": "message/rfc822"
+        },
+        "content": "VGhlIG9yaWdpbmFsIG1lc3NhZ2Uu"
+      }
+    }
+  },
+  "encoded-names": {
+    "envelope": {
+      "date": "2026-11-02T17:00:00.000Z",
+      "subject": "Résumé et facture",
+      "from": [
+        {
+          "name": "Zélie",
+          "address": "zelie@example.test"
+        }
+      ],
+      "sender": [
+        {
+          "name": "Zélie",
+          "address": "zelie@example.test"
+        }
+      ],
+      "replyTo": [
+        {
+          "name": "Zélie",
+          "address": "zelie@example.test"
+        }
+      ],
+      "to": [
+        {
+          "name": "",
+          "address": "reader@example.test"
+        }
+      ],
+      "messageId": "<encoded-names@example.test>"
+    },
+    "bodyStructure": {
+      "childNodes": [
+        {
+          "part": "1",
+          "type": "text/plain",
+          "parameters": {
+            "charset": "utf-8"
+          },
+          "encoding": "7bit",
+          "size": 53,
+          "lineCount": 2
+        },
+        {
+          "part": "2",
+          "type": "text/plain",
+          "parameters": {
+            "charset": "utf-8"
+          },
+          "encoding": "7bit",
+          "size": 123,
+          "lineCount": 3,
+          "disposition": "attachment",
+          "dispositionParameters": {
+            "filename": "résumé.txt"
+          }
+        },
+        {
+          "part": "3",
+          "type": "application/pdf",
+          "parameters": {
+            "name": "facture n°1.pdf"
+          },
+          "encoding": "base64",
+          "size": 211,
+          "disposition": "attachment",
+          "dispositionParameters": {
+            "filename": "facture n°1.pdf"
+          }
+        }
+      ],
+      "type": "multipart/mixed",
+      "parameters": {
+        "boundary": "mix"
+      }
+    },
+    "size": 701,
+    "parts": {
+      "1": {
+        "meta": {
+          "expectedSize": 701,
+          "contentType": "text/plain",
+          "charset": "utf-8"
+        },
+        "content": "VHdvIGZpbGVzLg=="
+      },
+      "2": {
+        "meta": {
+          "expectedSize": 701,
+          "contentType": "text/plain",
+          "charset": "utf-8",
+          "disposition": "attachment",
+          "filename": "résumé.txt"
+        },
+        "content": "Q1YgdGV4dC4="
+      },
+      "3": {
+        "meta": {
+          "expectedSize": 701,
+          "contentType": "application/pdf",
+          "encoding": "base64",
+          "disposition": "attachment",
+          "filename": "facture n°1.pdf"
+        },
+        "content": "JVBERi0xLjQgaW52b2ljZQ=="
+      }
+    }
+  },
+  "latin1": {
+    "envelope": {
+      "date": "2026-11-02T18:00:00.000Z",
+      "subject": "Déjà vu",
+      "from": [
+        {
+          "name": "Eve",
+          "address": "eve@example.test"
+        }
+      ],
+      "sender": [
+        {
+          "name": "Eve",
+          "address": "eve@example.test"
+        }
+      ],
+      "replyTo": [
+        {
+          "name": "Eve",
+          "address": "eve@example.test"
+        }
+      ],
+      "to": [
+        {
+          "name": "",
+          "address": "reader@example.test"
+        }
+      ],
+      "messageId": "<latin1@example.test>"
+    },
+    "bodyStructure": {
+      "type": "text/plain",
+      "parameters": {
+        "charset": "iso-8859-1"
+      },
+      "encoding": "quoted-printable",
+      "size": 305,
+      "lineCount": 11
+    },
+    "size": 305,
+    "parts": {
+      "1": {
+        "meta": {
+          "expectedSize": 305,
+          "contentType": "text/plain",
+          "charset": "utf-8",
+          "encoding": "quoted-printable"
+        },
+        "content": "RMOpasOgIHZ1LCDDqXTDqS4="
+      }
+    }
+  }
+}

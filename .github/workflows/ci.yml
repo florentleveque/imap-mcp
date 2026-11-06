@@ -59,6 +59,11 @@ jobs:
           retention-days: 7
           if-no-files-found: warn
 
+      # The IMAP code against a GreenMail container, started by testcontainers
+      # on the runner's Docker.
+      - name: Integration tests
+        run: pnpm test:integration
+
       - run: pnpm build
 
       # The built executable, the way an MCP client starts it: handshake, nothing

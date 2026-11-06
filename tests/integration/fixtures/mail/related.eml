@@ -1,0 +1,21 @@
+From: News <news@example.test>
+To: reader@example.test
+Subject: Embedded logo
+Date: Mon, 02 Nov 2026 15:00:00 +0000
+Message-ID: <related@example.test>
+MIME-Version: 1.0
+Content-Type: multipart/related; boundary="rel"
+
+--rel
+Content-Type: text/html; charset=utf-8
+
+<p>Logo: <img src="cid:logo@example.test"></p>
+--rel
+Content-Type: image/png
+Content-ID: <logo@example.test>
+Content-Disposition: inline
+Content-Transfer-Encoding: base64
+
+iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==
+--rel--
+

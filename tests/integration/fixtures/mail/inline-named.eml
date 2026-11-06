@@ -1,0 +1,20 @@
+From: Alice Example <alice@example.test>
+To: reader@example.test
+Subject: Inline photo
+Date: Mon, 02 Nov 2026 13:00:00 +0000
+Message-ID: <inline-named@example.test>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="mix"
+
+--mix
+Content-Type: text/plain; charset=utf-8
+
+A photo.
+--mix
+Content-Type: image/png
+Content-Disposition: inline; filename="photo.png"
+Content-Transfer-Encoding: base64
+
+iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==
+--mix--
+

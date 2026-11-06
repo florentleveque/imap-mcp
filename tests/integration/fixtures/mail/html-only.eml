@@ -1,0 +1,10 @@
+From: News <news@example.test>
+To: reader@example.test
+Subject: HTML only
+Date: Mon, 02 Nov 2026 10:00:00 +0000
+Message-ID: <html-only@example.test>
+MIME-Version: 1.0
+Content-Type: text/html; charset=utf-8
+
+<html><body><h1>Weekly news</h1><p>Read <a href="https://example.test/n">the issue</a>.</p><img src="cid:logo" alt="logo"></body></html>
+

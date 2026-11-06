@@ -5,6 +5,14 @@ allowBuilds:
   # binary already ships in the platform optional dependency, so the CLI works
   # with the build script blocked. Kept false deliberately.
   lefthook: false
+  # Pulled in by testcontainers (dev only), through dockerode. ssh2 and
+  # cpu-features compile optional native bindings that ssh2 falls back from in
+  # pure JavaScript, and ssh2 only serves a remote Docker host over SSH, which
+  # the tests never use. protobufjs's postinstall only prints a version-scheme
+  # warning. None is needed, so all stay blocked.
+  cpu-features: false
+  protobufjs: false
+  ssh2: false
 
 # 5 days. pnpm refuses any version younger than this when it resolves the tree,
 # so a compromised release that gets yanked within that window never lands.
