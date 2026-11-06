@@ -3,6 +3,12 @@
   "version": "0.0.0-development",
   "description": "Model Context Protocol server for IMAP mailboxes, with passwords kept out of the MCP client configuration",
   "type": "module",
+  "bin": {
+    "imap-mcp": "build/index.js"
+  },
+  "files": [
+    "build"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
@@ -10,6 +16,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "test:smoke": "node scripts/smoke-stdio.mjs",
     "prepare": "lefthook install || true",
     "check": "biome check --error-on-warnings .",
     "check:fix": "biome check --write ."
@@ -37,6 +44,10 @@
     "node": ">=24"
   },
   "packageManager": "pnpm@12.17.0+sha512.b8d223ebec04b580a89ed206daa71d1bccb6a1ee1d52efa95cc3b0db75271561df8f0d8e2c43add39c5ec08018af7a8a95108e7090f95a29f88727b7a40fd53d",
+  "dependencies": {
+    "@modelcontextprotocol/server": "^2.4.0",
+    "zod": "^4.6.7"
+  },
   "devDependencies": {
     "@biomejs/biome": "2.6.4",
     "@types/node": "~24.19.2",

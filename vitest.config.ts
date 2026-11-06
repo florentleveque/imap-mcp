@@ -8,6 +8,8 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       include: ['src/**/*.ts'],
+      // The executable: `pnpm test:smoke` runs it end to end on the build.
+      exclude: ['src/index.ts'],
       // json-summary feeds the coverage table in the CI job summary.
       reporter: ['text', 'text-summary', 'json-summary'],
       // Quality gate: the run fails below these floors. Ratchet them up as
