@@ -1,0 +1,2 @@
+# MIME fixtures: CRLF line endings are part of the format, keep the bytes.
+*.eml -text

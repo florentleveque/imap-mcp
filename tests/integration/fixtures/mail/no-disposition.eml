@@ -1,0 +1,19 @@
+From: Alice Example <alice@example.test>
+To: reader@example.test
+Subject: Data file
+Date: Mon, 02 Nov 2026 14:00:00 +0000
+Message-ID: <no-disposition@example.test>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="mix"
+
+--mix
+Content-Type: text/plain; charset=utf-8
+
+Raw data.
+--mix
+Content-Type: application/octet-stream; name="data.bin"
+Content-Transfer-Encoding: base64
+
+YmluYXJ5LWlzaCB0ZXN0IGRhdGE=
+--mix--
+

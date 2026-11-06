@@ -1,0 +1,24 @@
+From: Bob <bob@example.test>
+To: reader@example.test
+Subject: Fwd: Original
+Date: Mon, 02 Nov 2026 16:00:00 +0000
+Message-ID: <forwarded@example.test>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="mix"
+
+--mix
+Content-Type: text/plain; charset=utf-8
+
+Forwarding this.
+--mix
+Content-Type: message/rfc822
+
+From: Dave <dave@example.test>
+To: bob@example.test
+Subject: Original
+Date: Sun, 01 Nov 2026 08:00:00 +0000
+Content-Type: text/plain; charset=utf-8
+
+The original message.
+--mix--
+
