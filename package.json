@@ -1,0 +1,65 @@
+{
+  "name": "@florentleveque/imap-mcp",
+  "version": "0.0.0-development",
+  "description": "Model Context Protocol server for IMAP mailboxes, with passwords kept out of the MCP client configuration",
+  "type": "module",
+  "bin": {
+    "imap-mcp": "build/index.js"
+  },
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:smoke": "node scripts/smoke-stdio.mjs",
+    "prepare": "lefthook install || true",
+    "check": "biome check --error-on-warnings .",
+    "check:fix": "biome check --write .",
+    "test:mutation": "stryker run",
+    "test:mutation:canary": "node scripts/mutation-canary.mjs",
+    "test:mutation:diff": "node scripts/mutation-scope.mjs diff",
+    "test:mutation:summary": "node scripts/mutation-scope.mjs summary"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "imap",
+    "email",
+    "keyring",
+    "ai",
+    "llm"
+  ],
+  "author": "Florent Lévêque <florent.leveque@free.fr>",
+  "license": "MIT",
+  "homepage": "https://github.com/florentleveque/imap-mcp#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/florentleveque/imap-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/florentleveque/imap-mcp/issues"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "packageManager": "pnpm@12.17.0+sha512.b8d223ebec04b580a89ed206daa71d1bccb6a1ee1d52efa95cc3b0db75271561df8f0d8e2c43add39c5ec08018af7a8a95108e7090f95a29f88727b7a40fd53d",
+  "dependencies": {
+    "@modelcontextprotocol/server": "^2.4.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.6.4",
+    "@stryker-mutator/core": "^10.1.1",
+    "@stryker-mutator/vitest-runner": "^10.1.1",
+    "@types/node": "~24.19.2",
+    "@vitest/coverage-v8": "^5.0.5",
+    "lefthook": "^2.2.2",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.5"
+  }
+}

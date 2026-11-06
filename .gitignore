@@ -1,0 +1,19 @@
+# Dependencies and build output
+node_modules/
+build/
+coverage/
+*.tsbuildinfo
+
+# Mutation testing: anchored, so a future `tests/functional/reports/` stays tracked.
+/reports/
+/.stryker-tmp/
+
+# Local environment and logs
+.env
+*.log
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
