@@ -18,6 +18,7 @@
     "test:coverage": "vitest run --coverage",
     "test:integration": "vitest run --config vitest.integration.config.ts",
     "test:smoke": "node scripts/smoke-stdio.mjs",
+    "functional:env": "node scripts/functional-env.mjs",
     "prepare": "lefthook install || true",
     "check": "biome check --error-on-warnings .",
     "check:fix": "biome check --write .",

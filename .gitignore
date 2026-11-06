@@ -17,3 +17,6 @@ coverage/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Functional-validation environment (scripts/functional-env.mjs)
+/.functional/
