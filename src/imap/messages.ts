@@ -25,7 +25,7 @@ export interface MessageSummary {
   hasAttachments: boolean;
 }
 
-const SUMMARY_FIELDS = {
+export const SUMMARY_FIELDS = {
   uid: true,
   envelope: true,
   flags: true,
@@ -41,7 +41,7 @@ export function searchQuery({ unseenOnly, ...criteria }: MessageFilters): Search
 }
 
 // A group marker (`Undisclosed recipients:;`) has a name and no address.
-const formatAddress = ({ name, address }: MessageAddressObject): string =>
+export const formatAddress = ({ name, address }: MessageAddressObject): string =>
   name && address ? `${name} <${address}>` : address || name || '';
 
 // imapflow leaves an unreadable Date header as a string: use the arrival then.

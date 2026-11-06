@@ -35,3 +35,9 @@ export const beforeField = z.iso
   .describe(
     'Keep the messages received before this day, as YYYY-MM-DD; the day itself is excluded.',
   );
+
+export const uidField = z
+  .number()
+  .int()
+  .positive()
+  .describe('UID of the message in the folder, as list-messages and search-messages return it.');
