@@ -31,6 +31,7 @@ Architecture, code style and the rules agents follow live in
 git clone https://github.com/florentleveque/imap-mcp.git
 cd imap-mcp && pnpm install
 pnpm check && pnpm typecheck && pnpm test && pnpm build && pnpm test:smoke
+pnpm test:integration   # needs Docker: runs the IMAP code against GreenMail
 ```
 
 `pnpm install` also installs the lefthook pre-commit hook. pnpm refuses any
@@ -72,8 +73,8 @@ dependency version published less than five days ago (`minimumReleaseAge` in
   - **Bug fixes**: write a test that reproduces the bug first, then fix it.
   - **Existing tests are sacred**: a failing existing test is a potential
     regression. Investigate before changing it.
-  - Never reach a real mail server in tests: the IMAP and SMTP servers they
-    use run locally in Docker.
+  - Never reach a real mail server in tests: `pnpm test:integration` runs
+    against a GreenMail container, started for you by testcontainers.
 - **Comments explain the _why_, not the _how_.** Longer rationale belongs in
   `docs/decisions/` with a one-line pointer from the code.
 - **Tool schemas are never weakened**: see the rule in
@@ -106,7 +107,7 @@ the assumption that everything below has been done.
 4. **Run the [author-side AI review](#author-side-ai-review)** and address its
    findings.
 5. **Run the full local gate**: `pnpm check`, `pnpm typecheck`, `pnpm test`,
-   `pnpm build`. If the PR changes anything under `src/`, also run the mutation
+   `pnpm test:integration`, `pnpm build`. If the PR changes anything under `src/`, also run the mutation
    gate on your diff, because CI does: `pnpm test:mutation:diff origin/main HEAD`
    ([`docs/decisions/mutation-testing.md`](docs/decisions/mutation-testing.md)).
 6. **Scope discipline.** Don't bundle unrelated cleanups. Note them and open a
