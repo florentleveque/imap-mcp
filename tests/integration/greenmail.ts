@@ -10,6 +10,10 @@ import { readFileSync } from 'node:fs';
 import { ImapFlow } from 'imapflow';
 import { inject } from 'vitest';
 
+import type { Account } from '../../src/config.js';
+import { openImapFlow } from '../../src/imap/client.js';
+import type { SessionDeps } from '../../src/imap/session.js';
+
 export const testCaPath = new URL('fixtures/tls/ca.pem', import.meta.url).pathname;
 export const testCa = readFileSync(testCaPath, 'utf8');
 
@@ -79,4 +83,23 @@ export async function seed(user: TestUser, messages: Seed[]): Promise<number[]> 
   } finally {
     await client.logout();
   }
+}
+
+/** An imap-mcp account for `user` on the container's IMAPS port, trusting the test CA. */
+export function accountFor(user: TestUser, overrides: Partial<Account> = {}): Account {
+  const { host, imaps } = greenmail();
+  return {
+    name: 'test',
+    host,
+    port: imaps,
+    security: 'tls',
+    user: user.email,
+    caFile: testCaPath,
+    ...overrides,
+  };
+}
+
+/** Session dependencies that answer with `user`'s password, through the real ImapFlow. */
+export function sessionDeps(user: TestUser, password = user.password): SessionDeps {
+  return { passwords: async () => password, openClient: openImapFlow };
 }
