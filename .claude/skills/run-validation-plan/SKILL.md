@@ -99,7 +99,10 @@ values, error texts, counts.
 ### Data in reports
 
 The mailbox is synthetic: its subjects, addresses and file names come from
-`tests/integration/fixtures/mail/` and may be quoted. If a result shows data
+`tests/integration/fixtures/mail/` and may be quoted. Several hold accented
+letters, which `.claude/hooks/english-guard.sh` refuses in any GitHub post:
+in a PR comment, name the fixture or the field instead (`subject of the latin1
+fixture, decoded as expected`). Committed report files have no such limit. If a result shows data
 that is not in those fixtures, the server is talking to another mailbox: stop,
 report `BLOCKED`, and quote nothing from it. The repository is public.
 
