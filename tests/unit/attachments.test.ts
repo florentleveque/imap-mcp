@@ -27,6 +27,10 @@ describe('safeFileName', () => {
     ['falcon.txt', 'falcon.txt'],
     ['del\u007fete.txt', 'del_ete.txt'],
     ['a//b', 'a_b'],
+    ['invoice\u202efdp.exe', 'invoice_fdp.exe'],
+    ['zero\u200bwidth.txt', 'zero_width.txt'],
+    ['next\u0085line.txt', 'next_line.txt'],
+    ['line\u2028paragraph\u2029.txt', 'line_paragraph_.txt'],
   ])('turns %j into %j', (name, expected) => {
     expect(safeFileName(name, 'fallback')).toBe(expected);
   });

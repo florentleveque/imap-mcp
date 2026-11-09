@@ -15,10 +15,11 @@ const PATH_SEPARATORS = /[/\\]/;
 const DOTS_ONLY = /^\.*$/;
 const EDGE_DOTS_AND_SPACES = /^[.\s]+|[.\s]+$/g;
 
-const isUnsafe = (char: string): boolean => {
-  const code = char.charCodeAt(0);
-  return code < 0x20 || code === 0x7f || FORBIDDEN.has(char);
-};
+// Control, format and line-separator characters: invisible, and a
+// right-to-left override can make a name read with another extension.
+const INVISIBLE = /[\p{Cc}\p{Cf}\p{Zl}\p{Zp}]/u;
+
+const isUnsafe = (char: string): boolean => INVISIBLE.test(char) || FORBIDDEN.has(char);
 
 // Real extensions are short; a longer one is cut like the rest of the name.
 const MAX_EXTENSION_BYTES = 32;
