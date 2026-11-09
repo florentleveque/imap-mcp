@@ -25,6 +25,20 @@ describe('a session against GreenMail', () => {
     );
   });
 
+  it('verifies the certificate even with NODE_TLS_REJECT_UNAUTHORIZED=0', async () => {
+    const account = accountFor(user, { caFile: undefined });
+    const before = process.env.NODE_TLS_REJECT_UNAUTHORIZED;
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+    try {
+      await expect(withClient(account, sessionDeps(user), noop)).rejects.toThrow(
+        /could not be verified \(SELF_SIGNED_CERT_IN_CHAIN\)/,
+      );
+    } finally {
+      if (before === undefined) delete process.env.NODE_TLS_REJECT_UNAUTHORIZED;
+      else process.env.NODE_TLS_REJECT_UNAUTHORIZED = before;
+    }
+  });
+
   it('never falls back to cleartext when STARTTLS is missing', async () => {
     // GreenMail's plain IMAP port does not offer STARTTLS.
     const account = accountFor(user, { security: 'starttls', port: greenmail().imap });

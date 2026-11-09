@@ -20,6 +20,8 @@ describe('imapOptions', () => {
       port: 993,
       secure: true,
       auth: { user: 'reader@example.test', pass: 'pw' },
+      // Explicit, so NODE_TLS_REJECT_UNAUTHORIZED=0 cannot turn verification off.
+      tls: { rejectUnauthorized: true },
       logger: false,
       disableAutoIdle: true,
       connectionTimeout: 20_000,
@@ -36,7 +38,7 @@ describe('imapOptions', () => {
   it('adds the configured CA and nothing that would weaken verification', () => {
     const options = imapOptions(account, 'pw', 'PEM');
 
-    expect(options.tls).toEqual({ ca: 'PEM' });
+    expect(options.tls).toEqual({ rejectUnauthorized: true, ca: 'PEM' });
   });
 });
 
