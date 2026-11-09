@@ -51,11 +51,12 @@ every scenario that reaches the mailbox is `BLOCKED`.
 ## The mailbox
 
 One account, `greenmail`. Folders `INBOX`, `Sent` and `Trash` (names imapflow
-would guess a special use from; GreenMail declares none). INBOX holds the ten
+would guess a special use from; GreenMail declares none). INBOX holds these
 fixtures of `tests/integration/fixtures/mail/`, received one a day at 09:00 UTC
-from 1 to 10 November 2026, in this order: `plain` (already read), `html-only`,
+from 1 November 2026, in this order: `plain` (already read), `html-only`,
 `alternative`, `attachment`, `inline-named`, `no-disposition`, `related`,
-`forwarded`, `encoded-names`, `latin1`. Every subject, address and file name is
+`forwarded`, `encoded-names`, `latin1`, `named-body`. The configuration sets
+`attachments.directory` to `.functional/attachments`. Every subject, address and file name is
 synthetic and may be quoted in a report.
 
 ## Adding a scenario

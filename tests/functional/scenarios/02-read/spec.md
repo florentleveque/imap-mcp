@@ -13,9 +13,9 @@ never guess them.
 ## Steps
 
 1. `list-folders`. Record each folder: path, and `specialUse` if present.
-2. `list-messages` with `{"limit": 10}`. Record `total`, then the uid and subject
-   of each message, in the order returned, and whether the result has a
-   `notice` field.
+2. `list-messages` with `{"limit": 10}`. Record `total`, then the uid, subject
+   and `date` of each message, in the order returned, and whether the result
+   has a `notice` field.
 3. `list-messages` with `{"limit": 3}`. Record `total` and the subjects.
 4. `list-messages` with `{"unseenOnly": true}`. Record `total`.
 5. `search-messages` with `{"subject": "report"}`. Record the subjects.
@@ -29,8 +29,14 @@ never guess them.
 11. `save-attachment` on that message, `{"part": "3"}`, twice.
     Record `savedTo` both times, then run `ls .functional/attachments`.
 12. `get-attachment` on that message, `{"part": "1"}`. Record the result.
-13. `list-messages` with `{"unseenOnly": true}` again. Record `total`.
-14. Write `tests/functional/reports/02-read.raw.json` with what you recorded, and
+13. `read-message` on the message whose subject is `Named body`. Record `body`
+    and `attachments`.
+14. `list-messages` with `{"unseenOnly": true}` again. Record `total`.
+15. Remove the `attachments` key from `.functional/config.json` (the server
+    reads it on every call), call `save-attachment` on the message whose
+    subject is `Résumé et facture` with `{"part": "3"}`, and record the result.
+    Then put the file back exactly as it was.
+16. Write `tests/functional/reports/02-read.raw.json` with what you recorded, and
     `tests/functional/reports/02-read.report.md` with the fence below, filled
     in. Paths under your home directory may be shortened to `~`.
 
@@ -77,7 +83,20 @@ expected values: `expected.md` is off-limits.
       "actual": null
     },
     { "id": "A12", "desc": "part 1 requested as an attachment", "pass": null, "actual": null },
-    { "id": "A13", "desc": "unread total after the run", "pass": null, "actual": null }
+    { "id": "A13", "desc": "unread total after the run", "pass": null, "actual": null },
+    { "id": "A14", "desc": "dates of the list of 10, in order", "pass": null, "actual": null },
+    {
+      "id": "A15",
+      "desc": "body and attachments of Named body",
+      "pass": null,
+      "actual": null
+    },
+    {
+      "id": "A16",
+      "desc": "save-attachment without attachments in the configuration",
+      "pass": null,
+      "actual": null
+    }
   ],
   "summary": "<one line: green / which IDs failed>"
 }

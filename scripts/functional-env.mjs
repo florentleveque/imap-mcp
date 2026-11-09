@@ -27,6 +27,7 @@ const MAILBOX = [
   'forwarded',
   'encoded-names',
   'latin1',
+  'named-body',
 ];
 
 // The build must be the commit recorded in state.json, which the validator
