@@ -76,7 +76,6 @@ export function defaultConfigPath(): string {
 export async function loadConfig(path: string): Promise<Config> {
   let text: string;
   try {
-    // Stryker disable next-line StringLiteral: JSON.parse decodes a Buffer as UTF-8 anyway.
     text = await readFile(path, 'utf8');
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
