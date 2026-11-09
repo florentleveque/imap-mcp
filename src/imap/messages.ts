@@ -57,6 +57,11 @@ function messageDate(...candidates: (Date | string | undefined)[]): string {
   return '';
 }
 
+export const missingMessage = (folder: string, uid: number): Error =>
+  new Error(
+    `No message with UID ${uid} in folder "${folder}". list-messages and search-messages give the UIDs.`,
+  );
+
 /** Where the body and attachments are; a message the server gave no structure for has none. */
 export const partsOf = ({ bodyStructure }: FetchMessageObject): MessageParts =>
   bodyStructure ? messageParts(bodyStructure) : { attachments: [] };

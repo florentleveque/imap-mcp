@@ -1,6 +1,5 @@
 import type { MailClient } from './client.js';
-import { partsOf } from './messages.js';
-import { missingMessage } from './read.js';
+import { missingMessage, partsOf } from './messages.js';
 import type { AttachmentInfo } from './structure.js';
 
 /**

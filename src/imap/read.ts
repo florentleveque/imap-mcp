@@ -7,6 +7,7 @@ import { downloadPart } from './download.js';
 import {
   formatAddress,
   type MessageSummary,
+  missingMessage,
   partsOf,
   SUMMARY_FIELDS,
   summarize,
@@ -48,11 +49,6 @@ const HTML_SELECTORS = [
     options: { uppercase: false },
   })),
 ];
-
-export const missingMessage = (folder: string, uid: number): Error =>
-  new Error(
-    `No message with UID ${uid} in folder "${folder}". list-messages and search-messages give the UIDs.`,
-  );
 
 async function downloadText(
   client: MailClient,
