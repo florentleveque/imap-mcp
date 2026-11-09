@@ -44,17 +44,24 @@ export function searchQuery({ unseenOnly, ...criteria }: MessageFilters): Search
 export const formatAddress = ({ name, address }: MessageAddressObject): string =>
   name && address ? `${name} <${address}>` : address || name || '';
 
-// imapflow leaves an unreadable Date header as a string: use the arrival then.
-function messageDate(sent: Date | string | undefined, received: Date | string | undefined): string {
-  const date = new Date(sent ?? Number.NaN);
-  return Number.isNaN(date.getTime()) ? new Date(received ?? 0).toISOString() : date.toISOString();
+/**
+ * The first readable date: the arrival (INTERNALDATE), which since and before
+ * filter on, then the Date header. imapflow leaves an unreadable one as a
+ * string; with neither readable, an empty string.
+ */
+function messageDate(...candidates: (Date | string | undefined)[]): string {
+  for (const candidate of candidates) {
+    const date = new Date(candidate ?? Number.NaN);
+    if (!Number.isNaN(date.getTime())) return date.toISOString();
+  }
+  return '';
 }
 
 export function summarize(message: FetchMessageObject): MessageSummary {
   const { envelope = {}, flags = new Set<string>(), bodyStructure } = message;
   return {
     uid: message.uid,
-    date: messageDate(envelope.date, message.internalDate),
+    date: messageDate(message.internalDate, envelope.date),
     from: envelope.from?.map(formatAddress)[0] ?? '',
     to: envelope.to?.map(formatAddress) ?? [],
     subject: envelope.subject ?? '',

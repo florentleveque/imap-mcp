@@ -42,6 +42,19 @@ describe('list-messages on GreenMail', () => {
     ]);
   });
 
+  it('dates each message by its arrival, not by its Date header', async () => {
+    const listed = (await tools.json('list-messages', {})) as Listed & {
+      messages: { date: string }[];
+    };
+
+    expect(listed.messages.map((message) => message.date)).toStrictEqual([
+      '2026-11-04T09:00:00.000Z',
+      '2026-11-03T09:00:00.000Z',
+      '2026-11-02T09:00:00.000Z',
+      '2026-11-01T09:00:00.000Z',
+    ]);
+  });
+
   it('keeps only the unread messages', async () => {
     const listed = (await tools.json('list-messages', { unseenOnly: true })) as Listed;
 

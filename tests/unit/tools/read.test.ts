@@ -26,7 +26,7 @@ describe('read-message', () => {
       folder: 'INBOX',
       uid: 7,
       messageId: '<attachment@example.test>',
-      date: '2026-11-02T12:00:00.000Z',
+      date: '2026-11-02T12:01:00.000Z',
       from: 'Alice Example <alice@example.test>',
       to: ['reader@example.test'],
       cc: [],

@@ -30,7 +30,7 @@ describe('list-messages', () => {
       messages: [
         {
           uid: 12,
-          date: '2026-11-02T11:00:00.000Z',
+          date: '2026-11-02T11:01:00.000Z',
           from: 'Bob <bob@example.test>',
           to: ['reader@example.test'],
           subject: 'Alternative',
@@ -41,7 +41,7 @@ describe('list-messages', () => {
         },
         {
           uid: 7,
-          date: '2026-11-02T12:00:00.000Z',
+          date: '2026-11-02T12:01:00.000Z',
           from: 'Alice Example <alice@example.test>',
           to: ['reader@example.test'],
           subject: 'Report attached',
@@ -52,7 +52,7 @@ describe('list-messages', () => {
         },
         {
           uid: 3,
-          date: '2026-11-02T09:00:00.000Z',
+          date: '2026-11-02T09:01:00.000Z',
           from: 'Alice Example <alice@example.test>',
           to: ['Reader <reader@example.test>'],
           subject: 'Plain text',
@@ -193,18 +193,33 @@ describe('search-messages', () => {
 });
 
 describe('message summaries', () => {
-  it('falls back to the received date when the Date header cannot be read', async () => {
+  const dateOf = async (internalDate: unknown, sent: unknown) => {
     server = await toolServer();
-    const message = fixtureMessage('plain', 1, { internalDate: new Date('2026-11-05T08:00:00Z') });
-    message.envelope.date = 'not a date' as never;
+    const message = fixtureMessage('plain', 1);
+    message.internalDate = internalDate as Date;
+    message.envelope.date = sent as Date;
     server.client.messages = [message];
     server.client.searchResult = [1];
-
     const { messages } = (await server.json('list-messages', { account: 'perso' })) as {
       messages: { date: string }[];
     };
+    return messages[0]?.date;
+  };
 
-    expect(messages[0]?.date).toBe('2026-11-05T08:00:00.000Z');
+  it('dates a message by its arrival, the date since and before filter on', async () => {
+    expect(await dateOf(new Date('2026-11-05T08:00:00Z'), new Date('2026-11-02T17:00:00Z'))).toBe(
+      '2026-11-05T08:00:00.000Z',
+    );
+  });
+
+  it('falls back to the Date header when the arrival date cannot be read', async () => {
+    expect(await dateOf('garbled', new Date('2026-11-02T17:00:00Z'))).toBe(
+      '2026-11-02T17:00:00.000Z',
+    );
+  });
+
+  it('gives an empty date when neither can be read', async () => {
+    expect(await dateOf('', 'not a date')).toBe('');
   });
 
   it('copes with a message without sender, recipients or subject', async () => {
