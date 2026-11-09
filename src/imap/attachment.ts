@@ -1,8 +1,7 @@
-import type { Readable } from 'node:stream';
-
 import type { MailClient } from './client.js';
+import { partsOf } from './messages.js';
 import { missingMessage } from './read.js';
-import { type AttachmentInfo, messageParts } from './structure.js';
+import type { AttachmentInfo } from './structure.js';
 
 /**
  * The attachment at `part`, as read-message lists it. Any other part (the
@@ -17,36 +16,11 @@ export async function findAttachment(
 ): Promise<AttachmentInfo> {
   const [message] = await client.fetchAll([uid], { uid: true, bodyStructure: true }, { uid: true });
   if (!message) throw missingMessage(folder, uid);
-  const attachment = message.bodyStructure
-    ? messageParts(message.bodyStructure).attachments.find((found) => found.part === part)
-    : undefined;
+  const attachment = partsOf(message).attachments.find((found) => found.part === part);
   if (!attachment) {
     throw new Error(
       `Message ${uid} has no attachment with part "${part}". read-message lists its attachments.`,
     );
   }
   return attachment;
-}
-
-/**
- * A part as it was sent, base64 or quoted-printable removed, and the charset
- * it declares. decodeText: false, or imapflow would re-encode an inline text
- * part in UTF-8 and unwrap format=flowed.
- */
-export async function downloadPart(
-  client: MailClient,
-  uid: number,
-  part: string,
-  maxBytes?: number,
-): Promise<{ content: Readable; charset?: string }> {
-  // imapflow reads an undefined maxBytes as no limit.
-  const { content, meta } = await client.download(String(uid), part, {
-    uid: true,
-    maxBytes,
-    decodeText: false,
-  });
-  if (!content) {
-    throw new Error(`The server returned no content for part "${part}" of message ${uid}.`);
-  }
-  return { content, charset: meta.charset };
 }

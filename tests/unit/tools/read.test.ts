@@ -160,12 +160,14 @@ describe('read-message', () => {
     });
   });
 
-  it('treats a part the server does not return as empty', async () => {
+  it('reports a body part the server does not return, as get-attachment does', async () => {
     const message = fixtureMessage('plain', 8);
     message.parts = {};
-    await serving(message);
+    const server = await serving(message);
 
-    expect((await read(8)).body).toStrictEqual({ format: 'text', text: '', truncated: false });
+    expect(await server.error('read-message', { account: 'perso', uid: 8 })).toBe(
+      'The server returned no content for part "1" of message 8.',
+    );
   });
 
   it('names a UID that is not in the folder', async () => {

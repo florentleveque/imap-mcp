@@ -4,7 +4,8 @@ import type { CallToolResult } from '@modelcontextprotocol/server';
 import { z } from 'zod';
 
 import { safeFileName, saveUnique } from '../attachments.js';
-import { downloadPart, findAttachment } from '../imap/attachment.js';
+import { findAttachment } from '../imap/attachment.js';
+import { downloadPart } from '../imap/download.js';
 import { withMailbox } from '../imap/session.js';
 import { decodeText } from '../imap/text.js';
 import { jsonResult } from '../mcp-format.js';

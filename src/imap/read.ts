@@ -3,6 +3,7 @@ import { buffer } from 'node:stream/consumers';
 import { convert } from 'html-to-text';
 
 import type { MailClient } from './client.js';
+import { downloadPart } from './download.js';
 import {
   formatAddress,
   type MessageSummary,
@@ -45,17 +46,13 @@ async function downloadText(
   uid: number,
   part: string,
 ): Promise<{ text: string; cut: boolean }> {
-  // One byte more than kept, to know whether the part was longer. Raw bytes
-  // (decodeText: false), so the limit counts what was sent: imapflow's
-  // format=flowed unwrapping would hide a cut.
-  const { content, meta } = await client.download(String(uid), part, {
-    uid: true,
-    maxBytes: BODY_BYTES + 1,
-    decodeText: false,
-  });
-  const bytes = content ? await buffer(content) : Buffer.alloc(0);
+  // One byte more than kept, to know whether the part was longer. The bytes
+  // as sent, so the limit counts them: imapflow's format=flowed unwrapping
+  // would hide a cut.
+  const { content, charset } = await downloadPart(client, uid, part, BODY_BYTES + 1);
+  const bytes = await buffer(content);
   return {
-    text: decodeText(bytes.subarray(0, BODY_BYTES), meta?.charset),
+    text: decodeText(bytes.subarray(0, BODY_BYTES), charset),
     cut: bytes.length > BODY_BYTES,
   };
 }
