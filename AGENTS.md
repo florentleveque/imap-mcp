@@ -62,7 +62,8 @@ These hold for every change. A PR that needs to break one says so in its title.
   assistant (prompt injection). Tool results mark it as data from the sender.
 - **Writes are opt-in.** Every write tool is off by default and enabled one by
   one in the configuration; every send is confirmed by the user through MCP
-  elicitation (#5).
+  elicitation (#5). `save-attachment` writes a local file only, and is refused
+  until `attachments.directory` is set: that key is its switch.
 - **No destructive shortcut.** Special folders are found through SPECIAL-USE
   (RFC 6154), never by name. Delete moves a message to the trash by UID; never
   EXPUNGE a whole folder.
