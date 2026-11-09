@@ -1,3 +1,5 @@
+import { getCACertificates } from 'node:tls';
+
 import type { ImapFlowOptions } from 'imapflow';
 
 import type { Account } from '../config.js';
@@ -20,7 +22,11 @@ export function imapOptions(
     port: account.port,
     ...(account.security === 'tls' ? { secure: true } : { secure: false, doSTARTTLS: true }),
     auth: { user: account.user, pass: password },
-    tls: { rejectUnauthorized: true, ...(ca === undefined ? {} : { ca }) },
+    tls: {
+      rejectUnauthorized: true,
+      // Node's `ca` replaces the default authorities: keep them, so caFile only adds one.
+      ...(ca === undefined ? {} : { ca: [...getCACertificates('default'), ca] }),
+    },
     logger: false,
     // One connection per tool call: nothing to keep alive between calls.
     disableAutoIdle: true,

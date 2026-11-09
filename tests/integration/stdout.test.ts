@@ -13,9 +13,11 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import { imapOptions } from '../../src/imap/options.js';
 import { accountFor, createUser, type TestUser, testCa } from './greenmail.js';
 
+// The options come on stdin: with Node's default CAs they outgrow an argument.
 const SESSION = `
+import { readFileSync } from 'node:fs';
 import { ImapFlow } from 'imapflow';
-const client = new ImapFlow(JSON.parse(process.argv[1]));
+const client = new ImapFlow(JSON.parse(readFileSync(0, 'utf8')));
 client.on('error', () => {});
 await client.connect();
 await client.list();
@@ -25,11 +27,12 @@ await client.logout();
 const repoRoot = fileURLToPath(new URL('../../', import.meta.url));
 
 function stdoutOf(options: object): string {
-  const run = spawnSync(
-    process.execPath,
-    ['--input-type=module', '-e', SESSION, JSON.stringify(options)],
-    { cwd: repoRoot, encoding: 'utf8', timeout: 20_000 },
-  );
+  const run = spawnSync(process.execPath, ['--input-type=module', '-e', SESSION], {
+    cwd: repoRoot,
+    encoding: 'utf8',
+    input: JSON.stringify(options),
+    timeout: 20_000,
+  });
   if (run.status !== 0) throw new Error(`the IMAP session failed: ${run.stderr}`);
   return run.stdout;
 }

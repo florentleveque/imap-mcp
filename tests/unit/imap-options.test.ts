@@ -1,3 +1,5 @@
+import { getCACertificates } from 'node:tls';
+
 import { ImapFlow } from 'imapflow';
 import { describe, expect, it } from 'vitest';
 
@@ -35,10 +37,13 @@ describe('imapOptions', () => {
     expect(options).toMatchObject({ port: 143, secure: false, doSTARTTLS: true });
   });
 
-  it('adds the configured CA and nothing that would weaken verification', () => {
+  it('adds the configured CA to the default ones and nothing that would weaken verification', () => {
     const options = imapOptions(account, 'pw', 'PEM');
 
-    expect(options.tls).toEqual({ rejectUnauthorized: true, ca: 'PEM' });
+    expect(options.tls).toEqual({
+      rejectUnauthorized: true,
+      ca: [...getCACertificates('default'), 'PEM'],
+    });
   });
 });
 

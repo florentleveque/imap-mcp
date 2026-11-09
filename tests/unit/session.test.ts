@@ -83,7 +83,7 @@ describe('withClient', () => {
 
     await withClient({ ...account, caFile }, deps, async () => undefined);
 
-    expect(opened[0]?.tls).toEqual({ rejectUnauthorized: true, ca: 'PEM DATA' });
+    expect(opened[0]?.tls?.ca).toContain('PEM DATA');
   });
 
   it('says which CA file it cannot read', async () => {
