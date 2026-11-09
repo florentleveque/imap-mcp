@@ -25,7 +25,7 @@ No tool changes the mailbox: folders are opened with EXAMINE and messages fetche
 
 ## Configuration
 
-A JSON file, by default `~/.config/imap-mcp/config.json` on every system, or the path given with `--config <path>`. It is read on every tool call, so an edit applies at once.
+A JSON file, by default `~/.config/imap-mcp/config.json` on every system, or the path given with `--config <path>` (a relative one is read from the directory the MCP client starts the server in: give an absolute path). It is read on every tool call, so an edit applies at once.
 
 ```json
 {
