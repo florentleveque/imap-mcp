@@ -36,6 +36,18 @@ export interface MessageContent extends Omit<MessageSummary, 'hasAttachments'> {
 
 const CRLF = /\r\n/g;
 
+// html-to-text runs table cells together (a layout table is not a data table)
+// and uppercases headings, which changes the text ("Straße" to "STRASSE").
+const HTML_SELECTORS = [
+  { selector: 'img', format: 'skip' },
+  { selector: 'td', format: 'block' },
+  { selector: 'th', format: 'block' },
+  ...['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].map((selector) => ({
+    selector,
+    options: { uppercase: false },
+  })),
+];
+
 export const missingMessage = (folder: string, uid: number): Error =>
   new Error(
     `No message with UID ${uid} in folder "${folder}". list-messages and search-messages give the UIDs.`,
@@ -67,10 +79,7 @@ async function readBody(
   const downloaded = await downloadText(client, uid, part);
   const plain = (
     text === undefined
-      ? convert(downloaded.text, {
-          wordwrap: false,
-          selectors: [{ selector: 'img', format: 'skip' }],
-        })
+      ? convert(downloaded.text, { wordwrap: false, selectors: HTML_SELECTORS })
       : downloaded.text
   ).replace(CRLF, '\n');
   return {

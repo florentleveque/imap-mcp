@@ -88,9 +88,32 @@ describe('read-message', () => {
 
     expect((await read(3)).body).toStrictEqual({
       format: 'html',
-      text: 'WEEKLY NEWS\n\nRead the issue [https://example.test/n].',
+      text: 'Weekly news\n\nRead the issue [https://example.test/n].',
       truncated: false,
     });
+  });
+
+  const htmlBody = async (html: string) => {
+    const message = fixtureMessage('html-only', 6);
+    message.parts['1'] = { meta: { charset: 'utf-8' }, content: Buffer.from(html) };
+    await serving(message);
+    return ((await read(6)) as { body: { text: string } }).body.text;
+  };
+
+  it('keeps the cells of an HTML table apart', async () => {
+    expect(
+      await htmlBody(
+        '<table><tr><th>Item</th><td>Offer</td><td>Price 10 EUR</td></tr></table><div>End</div>',
+      ),
+    ).toBe('Item\n\nOffer\n\nPrice 10 EUR\n\nEnd');
+  });
+
+  it('keeps the case of HTML headings', async () => {
+    expect(
+      await htmlBody(
+        '<h1>Straße</h1><h2>Two</h2><h3>Three</h3><h4>Four</h4><h5>Five</h5><h6>Six</h6>',
+      ),
+    ).toBe('Straße\n\n\nTwo\n\n\nThree\n\nFour\n\nFive\n\nSix');
   });
 
   it('says when a message has no text body at all', async () => {

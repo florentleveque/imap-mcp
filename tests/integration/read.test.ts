@@ -40,7 +40,7 @@ describe('read-message on GreenMail', () => {
 
   it('converts an HTML-only body', async () => {
     expect(await read('html-only')).toMatchObject({
-      body: { format: 'html', text: 'WEEKLY NEWS\n\nRead the issue [https://example.test/n].' },
+      body: { format: 'html', text: 'Weekly news\n\nRead the issue [https://example.test/n].' },
     });
   });
 
