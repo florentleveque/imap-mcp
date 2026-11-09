@@ -100,6 +100,7 @@ describe('messageParts', () => {
     const structure = {
       type: 'text/plain',
       size: 10,
+      disposition: 'attachment',
       dispositionParameters: { filename: '' },
       parameters: { name: 'notes.txt' },
     };
@@ -107,6 +108,79 @@ describe('messageParts', () => {
     expect(messageParts(structure as never).attachments).toStrictEqual([
       { part: '1', filename: 'notes.txt', contentType: 'text/plain', size: 10, inline: false },
     ]);
+  });
+
+  it('reads a named text part as the body when the message has no other', () => {
+    const structure = { type: 'text/plain', size: 10, parameters: { name: 'message.txt' } };
+
+    expect(messageParts(structure as never)).toStrictEqual({ text: '1', attachments: [] });
+  });
+
+  it('takes the first named inline text part as the body, and lists the rest', () => {
+    const leaf = (part: string, type: string, extra: object) => ({
+      part,
+      type,
+      size: 10,
+      ...extra,
+    });
+    const structure = {
+      type: 'multipart/mixed',
+      childNodes: [
+        leaf('1', 'text/plain', { disposition: 'inline', parameters: { name: 'message.txt' } }),
+        leaf('2', 'text/plain', { parameters: { name: 'notes.txt' } }),
+        leaf('3', 'application/pdf', { disposition: 'attachment', parameters: { name: 'a.pdf' } }),
+      ],
+    };
+
+    expect(messageParts(structure as never)).toStrictEqual({
+      text: '1',
+      attachments: [
+        { part: '2', filename: 'notes.txt', contentType: 'text/plain', size: 10, inline: false },
+        { part: '3', filename: 'a.pdf', contentType: 'application/pdf', size: 10, inline: false },
+      ],
+    });
+  });
+
+  it('never takes a named part other than text for the body', () => {
+    const structure = { type: 'image/png', size: 10, parameters: { name: 'logo.png' } };
+
+    expect(messageParts(structure as never)).toStrictEqual({
+      attachments: [
+        { part: '1', filename: 'logo.png', contentType: 'image/png', size: 10, inline: false },
+      ],
+    });
+  });
+
+  it('never takes a text part sent as an attachment for the body', () => {
+    const structure = {
+      type: 'text/plain',
+      size: 10,
+      disposition: 'attachment',
+      parameters: { name: 'message.txt' },
+    };
+
+    expect(messageParts(structure as never)).toStrictEqual({
+      attachments: [
+        { part: '1', filename: 'message.txt', contentType: 'text/plain', size: 10, inline: false },
+      ],
+    });
+  });
+
+  it('keeps a named text part listed when the message has an HTML body', () => {
+    const structure = {
+      type: 'multipart/mixed',
+      childNodes: [
+        { part: '1', type: 'text/html', size: 10 },
+        { part: '2', type: 'text/plain', size: 10, parameters: { name: 'notes.txt' } },
+      ],
+    };
+
+    expect(messageParts(structure as never)).toStrictEqual({
+      html: '1',
+      attachments: [
+        { part: '2', filename: 'notes.txt', contentType: 'text/plain', size: 10, inline: false },
+      ],
+    });
   });
 
   it('keeps the first text of a message with several, and walks nested multiparts', () => {

@@ -9,7 +9,8 @@
 
 `read-message` fetches the envelope and the BODYSTRUCTURE, then downloads the
 body part only: the first unnamed `text/plain`, or else the first unnamed
-`text/html`, converted by `html-to-text`. `get-attachment` downloads the one
+`text/html`, converted by `html-to-text`. With neither, the first named
+`text/plain` not sent as an attachment is the body: some mailers name it. `get-attachment` downloads the one
 part it serves. Both download with `decodeText: false`: imapflow then removes
 the transfer encoding only. Its text conversion would re-encode an inline text
 attachment in UTF-8 and unwrap `format=flowed`, so a saved file would differ
