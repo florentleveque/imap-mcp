@@ -3,8 +3,9 @@ import { extname, join } from 'node:path';
 import type { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 
-// Windows device names, reserved whatever the extension and the spaces before it.
-const RESERVED = /^(con|prn|aux|nul|com\d|lpt\d)\s*(\..*)?$/i;
+// Windows device names, reserved whatever the extension and the spaces before
+// it; Windows reads the superscript digits ¹ ² ³ as digits there.
+const RESERVED = /^(con|prn|aux|nul|com[\d¹²³]|lpt[\d¹²³])\s*(\..*)?$/i;
 
 // Most file systems cap a name at 255 bytes; keep a margin for " (n)".
 const MAX_BYTES = 200;
