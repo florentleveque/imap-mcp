@@ -17,6 +17,7 @@ const CERTIFICATE_CODES = new Set<string | undefined>([
   'UNABLE_TO_VERIFY_LEAF_SIGNATURE',
   'UNABLE_TO_GET_ISSUER_CERT_LOCALLY',
   'CERT_HAS_EXPIRED',
+  'CERT_NOT_YET_VALID',
   'ERR_TLS_CERT_ALTNAME_INVALID',
 ]);
 
@@ -46,6 +47,8 @@ const asImapError = (error: unknown): ImapFlowError | undefined =>
 function certificateHint(code: string | undefined, account: Account): string {
   if (code === 'CERT_HAS_EXPIRED')
     return "It has expired: the server's administrator has to renew it.";
+  if (code === 'CERT_NOT_YET_VALID')
+    return 'It is not valid yet: check the clock of this computer.';
   if (code === 'ERR_TLS_CERT_ALTNAME_INVALID') {
     return `It names another host: check the host of account "${account.name}".`;
   }

@@ -131,6 +131,11 @@ describe('withClient', () => {
         "The TLS certificate of imap.example.test could not be verified (CERT_HAS_EXPIRED). It has expired: the server's administrator has to renew it.",
       ],
       [
+        'CERT_NOT_YET_VALID',
+        errorWith({ code: 'CERT_NOT_YET_VALID' }),
+        'The TLS certificate of imap.example.test could not be verified (CERT_NOT_YET_VALID). It is not valid yet: check the clock of this computer.',
+      ],
+      [
         'ERR_TLS_CERT_ALTNAME_INVALID',
         errorWith({ code: 'ERR_TLS_CERT_ALTNAME_INVALID' }),
         'The TLS certificate of imap.example.test could not be verified (ERR_TLS_CERT_ALTNAME_INVALID). It names another host: check the host of account "perso".',
