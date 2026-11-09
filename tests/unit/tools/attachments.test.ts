@@ -245,6 +245,25 @@ describe('save-attachment', () => {
     expect(saved.savedTo).toBe(join(directory, 'attachment-4-2'));
   });
 
+  it('keeps the dots of a nested part out of the fallback name, where they would read as an extension', async () => {
+    const server = await serving();
+    const directory = join(server.dir, 'saved');
+    await server.cleanup();
+    const configured = await serving({ directory });
+    const message = fixtureMessage('forwarded', 11);
+    const embedded = message.bodyStructure.childNodes?.[1];
+    if (!embedded) throw new Error('the forwarded fixture has no second part');
+    embedded.part = '1.3';
+    message.parts['1.3'] = message.parts['2'] as never;
+    configured.client.messages.push(message);
+
+    const saved = metadata(
+      await configured.call('save-attachment', { account: 'perso', uid: 11, part: '1.3' }),
+    );
+
+    expect(saved.savedTo).toBe(join(directory, 'attachment-11-1-3'));
+  });
+
   it('only saves a part that read-message lists as an attachment', async () => {
     const server = await serving();
     const directory = join(server.dir, 'saved');

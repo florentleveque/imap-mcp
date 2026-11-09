@@ -108,7 +108,9 @@ export const attachmentTools: ToolDefinition[] = [
       return withMailbox(account, folder, context.session, async (client) => {
         const attachment = await findAttachment(client, folder, uid, part);
         const { content } = await downloadPart(client, uid, part);
-        const fileName = safeFileName(attachment.filename, `attachment-${uid}-${part}`);
+        // Dashes, not the dots of a part id, which would read as an extension.
+        const fallback = `attachment-${uid}-${part.replaceAll('.', '-')}`;
+        const fileName = safeFileName(attachment.filename, fallback);
         const saved = await saveUnique(directory, fileName, content);
         return jsonResult(
           untrusted({
