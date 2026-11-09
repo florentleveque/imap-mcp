@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "imap-mcp-dev": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["build/index.js", "--config", ".functional/config.json"]
+    }
+  }
+}

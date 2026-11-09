@@ -1,0 +1,9 @@
+From: Bob <bob@example.test>
+To: reader@example.test
+Subject: Named body
+Date: Mon, 02 Nov 2026 20:00:00 +0000
+Message-ID: <named-body@example.test>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; name="message.txt"
+
+The body carries a file name.

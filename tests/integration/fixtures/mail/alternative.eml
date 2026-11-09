@@ -1,0 +1,20 @@
+From: Bob <bob@example.test>
+To: reader@example.test
+Cc: Carol <carol@example.test>
+Reply-To: replies@example.test
+Subject: Alternative
+Date: Mon, 02 Nov 2026 11:00:00 +0000
+Message-ID: <alternative@example.test>
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="alt"
+
+--alt
+Content-Type: text/plain; charset=utf-8
+
+Plain version.
+--alt
+Content-Type: text/html; charset=utf-8
+
+<p>HTML version.</p>
+--alt--
+

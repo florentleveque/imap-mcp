@@ -33,8 +33,18 @@ change rather than the file.
 - A local MCP server over stdio: the MCP client starts it as a child process.
   `src/index.ts` is the executable and hands `createMcpServer`
   (`src/server.ts`) to the SDK's stdio transport.
-- The IMAP layer, the configuration file and the password sources arrive with
-  #3 and #4; record their rules here in the PR that adds them.
+- `src/tools/` defines the tools (one file per group, `registry.ts` lists
+  them); `src/imap/` talks to the server; `src/config.ts` reads the JSON
+  configuration on every call. Password sources arrive with #4
+  (`src/passwords.ts`).
+- One IMAP connection per tool call (`withClient`, `withMailbox` in
+  `src/imap/session.ts`): connect, open the folder read-only (EXAMINE), work,
+  log out. Nothing stays open between calls.
+- `src/imap/options.ts` holds the TLS and logging invariants below; change them
+  there only. A special use comes from the server's SPECIAL-USE attribute
+  only: imapflow also guesses one from the folder name (`specialUseSource`).
+- Why per-part extraction, one connection per call and the test layout:
+  `docs/decisions/imap-layer.md`.
 
 ## Security invariants
 
@@ -52,7 +62,8 @@ These hold for every change. A PR that needs to break one says so in its title.
   assistant (prompt injection). Tool results mark it as data from the sender.
 - **Writes are opt-in.** Every write tool is off by default and enabled one by
   one in the configuration; every send is confirmed by the user through MCP
-  elicitation (#5).
+  elicitation (#5). `save-attachment` writes a local file only, and is refused
+  until `attachments.directory` is set: that key is its switch.
 - **No destructive shortcut.** Special folders are found through SPECIAL-USE
   (RFC 6154), never by name. Delete moves a message to the trash by UID; never
   EXPUNGE a whole folder.
@@ -70,8 +81,14 @@ This never overrides the tool schema rule below.
 - New features: TDD, failing test first. Bug fixes: reproduce with a test first.
 - Existing tests are sacred: a failure is a potential regression. Find the root
   cause before touching the test.
-- Never reach a real mail server from a test: the IMAP and SMTP servers tests use
-  run locally in Docker.
+- Never reach a real mail server from a test. `pnpm test:integration` runs the
+  IMAP code against GreenMail in Docker (testcontainers); `pnpm test` stays
+  Docker-free, since Stryker loads only `vitest.config.ts`.
+- Unit tests stand in for imapflow with `tests/unit/fakes/mail-client.ts`,
+  replaying what imapflow returned on GreenMail
+  (`tests/unit/fixtures/messages.json`). A new MIME case starts as a synthetic
+  `.eml` in `tests/integration/fixtures/mail/`, recorded with
+  `pnpm test:integration -u`; never hand-edit the recording.
 - Coverage thresholds in `vitest.config.ts` are a ratchet: raise them, never
   lower them.
 - Mutation testing (StrykerJS) runs over the scope in `stryker.config.mjs`, and
@@ -91,8 +108,9 @@ tool surface, the transport, resources, prompts, persistence or timing a
 running server exposes to a client) must also carry a **functional validation
 plan**, written for an _independent_ validator (another agent or a human who did
 not write the code). It lives in the PR description; the validator posts their
-report as a PR comment, in English. The skills that write and run such a plan
-arrive with the first tools (#3).
+report as a PR comment, in English. The `functional-validation-plan` and
+`run-validation-plan` skills write and run it, on the synthetic mailbox of
+`tests/functional/README.md`.
 
 Independence is about context, not identity: every agent here acts under the
 same GitHub account, so a comment's author says nothing about which session
@@ -165,13 +183,16 @@ never drop a field, loosen a type or drop what a description said (saying it in
 fewer words is fine, fixing a false statement is a duty). A **new tool** states
 its purpose, when to use it, its side effects, and describes every parameter,
 and keeps the tool set coherent: consistent naming, no needless duplication.
-The snapshot test that pins the exposed `tools/list` answer arrives with the
-first tools (#3).
+`tests/unit/fixtures/tools-list.json` holds the exposed `tools/list` answer and
+`tests/unit/tool-schemas.test.ts` compares the server against it: edit it in
+the commit that changes the surface. The same test checks the surface against
+`tools-list.floor.json`, the first published schemas: extend it when a tool is
+added, never edit it to make a test pass.
 
 ## Documentation maintenance
 
-A change to the tool surface updates the tools section of `README.md` in the
-same PR. Keep counts out of prose; they only go stale.
+A change to the tool surface updates the "Tools Available" section of
+`README.md` in the same PR. Keep counts out of prose; they only go stale.
 
 ## Submission quality bar
 

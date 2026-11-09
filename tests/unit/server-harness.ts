@@ -5,6 +5,7 @@
  */
 
 import { createMcpServer } from '../../src/server.js';
+import type { ToolContext } from '../../src/tools/definitions.js';
 
 interface JsonRpcMessage {
   jsonrpc: '2.0';
@@ -57,8 +58,24 @@ export async function initialize(transport: LoopbackTransport): Promise<JsonRpcM
   return init.result;
 }
 
+// A path nothing creates: a server built without a context has no configuration.
+const NO_CONFIG: ToolContext = {
+  configPath: '/nonexistent/imap-mcp/config.json',
+  session: {
+    passwords: async () => {
+      throw new Error('no password in this test');
+    },
+    openClient: () => {
+      throw new Error('no IMAP client in this test');
+    },
+  },
+};
+
 /** Connect a fresh server to `transport` and run the MCP handshake; returns the initialize result. */
-export async function openSession(transport: LoopbackTransport): Promise<JsonRpcMessage['result']> {
-  await createMcpServer().connect(transport as never);
+export async function openSession(
+  transport: LoopbackTransport,
+  context: ToolContext = NO_CONFIG,
+): Promise<JsonRpcMessage['result']> {
+  await createMcpServer(context).connect(transport as never);
   return initialize(transport);
 }
