@@ -16,7 +16,7 @@ export default defineConfig({
       // coverage improves; never lower them silently.
       thresholds: {
         statements: 100,
-        branches: 98,
+        branches: 99,
         functions: 100,
         lines: 100,
       },
