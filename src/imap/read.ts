@@ -35,6 +35,7 @@ export interface MessageContent extends Omit<MessageSummary, 'hasAttachments'> {
 }
 
 const CRLF = /\r\n/g;
+const LONE_HIGH_SURROGATE_AT_END = /[\uD800-\uDBFF]$/;
 
 // html-to-text runs table cells together (a layout table is not a data table)
 // and uppercases headings, which changes the text ("Straße" to "STRASSE").
@@ -84,7 +85,8 @@ async function readBody(
   ).replace(CRLF, '\n');
   return {
     format: text === undefined ? 'html' : 'text',
-    text: plain.slice(0, BODY_CHARS),
+    // A cut between the two halves of a surrogate pair leaves half a character.
+    text: plain.slice(0, BODY_CHARS).replace(LONE_HIGH_SURROGATE_AT_END, ''),
     truncated: downloaded.cut || plain.length > BODY_CHARS,
   };
 }

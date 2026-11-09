@@ -135,6 +135,18 @@ describe('read-message', () => {
     expect(body.truncated).toBe(true);
   });
 
+  it('never cuts a character in two at the limit', async () => {
+    const message = fixtureMessage('plain', 5);
+    const text = `😀${'x'.repeat(99_997)}😀 and more`;
+    message.parts['1'] = { meta: {}, content: Buffer.from(text) };
+    await serving(message);
+
+    const { body } = (await read(5)) as { body: { text: string; truncated: boolean } };
+
+    expect(body.text).toBe(`😀${'x'.repeat(99_997)}`);
+    expect(body.truncated).toBe(true);
+  });
+
   it('keeps a text of exactly the limit whole', async () => {
     const message = fixtureMessage('plain', 5);
     message.parts['1'] = { meta: {}, content: Buffer.from('x'.repeat(100_000)) };
