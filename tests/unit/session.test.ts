@@ -118,6 +118,14 @@ describe('withClient', () => {
         `The TLS certificate of imap.example.test could not be verified (${code}). If the server uses a private CA, set caFile for account "perso".`,
       ]),
       [
+        'a certificate refused during STARTTLS, which imapflow also marks tlsFailed',
+        errorWith(
+          { tlsFailed: true, code: 'SELF_SIGNED_CERT_IN_CHAIN' },
+          'self-signed certificate in certificate chain',
+        ),
+        'The TLS certificate of imap.example.test could not be verified (SELF_SIGNED_CERT_IN_CHAIN). If the server uses a private CA, set caFile for account "perso".',
+      ],
+      [
         'CERT_HAS_EXPIRED',
         errorWith({ code: 'CERT_HAS_EXPIRED' }),
         "The TLS certificate of imap.example.test could not be verified (CERT_HAS_EXPIRED). It has expired: the server's administrator has to renew it.",

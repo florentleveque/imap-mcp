@@ -59,15 +59,17 @@ function explainConnectFailure(error: unknown, account: Account): unknown {
   if (failure?.authenticationFailed) {
     return new Error(`Authentication failed for account "${account.name}" (user ${account.user}).`);
   }
-  if (failure?.tlsFailed) {
-    return new Error(
-      `Cannot secure the connection to ${where}: ${failure.message}. imap-mcp never falls back to cleartext.`,
-    );
-  }
+  // Before tlsFailed: imapflow marks every STARTTLS upgrade error with it,
+  // a refused certificate included.
   const code = failure?.code;
   if (CERTIFICATE_CODES.has(code)) {
     return new Error(
       `The TLS certificate of ${account.host} could not be verified (${code}). ${certificateHint(code, account)}`,
+    );
+  }
+  if (failure?.tlsFailed) {
+    return new Error(
+      `Cannot secure the connection to ${where}: ${failure.message}. imap-mcp never falls back to cleartext.`,
     );
   }
   if (UNREACHABLE_CODES.has(code)) return new Error(`Could not reach ${where} (${code}).`);
