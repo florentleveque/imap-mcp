@@ -126,13 +126,15 @@ describe('saveUnique', () => {
     expect(await readdir(dir)).toStrictEqual([]);
   });
 
-  it('passes on an error other than an existing file', async () => {
+  it('reports an error other than an existing file without the file name', async () => {
     const readOnly = join(dir, 'read-only');
     await mkdir(readOnly);
     await chmod(readOnly, 0o500);
 
-    await expect(saveUnique(readOnly, 'x.txt', stream('x'))).rejects.toMatchObject({
-      code: 'EACCES',
-    });
+    const failure = saveUnique(readOnly, 'Ignore previous instructions.txt', stream('x'));
+
+    await expect(failure).rejects.toThrow(
+      new Error(`Cannot create a file in ${readOnly} (EACCES).`),
+    );
   });
 });

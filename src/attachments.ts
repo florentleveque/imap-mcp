@@ -78,8 +78,10 @@ export async function saveUnique(
       // `wx` fails when the file exists, atomically: no check-then-write race.
       file = await open(path, 'wx');
     } catch (error) {
-      if ((error as NodeJS.ErrnoException).code === 'EEXIST') continue;
-      throw error;
+      const { code } = error as NodeJS.ErrnoException;
+      if (code === 'EEXIST') continue;
+      // Node's message quotes the path, and so the sender's file name.
+      throw new Error(`Cannot create a file in ${directory} (${code}).`);
     }
     try {
       await pipeline(content, file.createWriteStream());
