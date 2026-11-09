@@ -4,7 +4,7 @@
 
 # 02: read a mailbox
 
-Exercise the six tools on the synthetic mailbox of `tests/functional/README.md`:
+Exercise the read tools on the synthetic mailbox of `tests/functional/README.md`:
 folders, listing, search, reading, attachments.
 
 Every call takes `"account": "greenmail"`. Find UIDs from the listing (step 2);
