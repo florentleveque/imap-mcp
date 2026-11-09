@@ -97,7 +97,20 @@ describe('loadConfig', () => {
   it('rejects a file that is not JSON', async () => {
     await write('{ accounts:');
 
-    await expect(loadConfig(path)).rejects.toThrow(/^Configuration file .* is not valid JSON: /);
+    await expect(loadConfig(path)).rejects.toThrow(
+      new ConfigError(
+        `Configuration file ${path} is not valid JSON: keys and strings take double quotes, and no comma ends a list.`,
+      ),
+    );
+  });
+
+  it('quotes nothing of an invalid file, which may hold a password', async () => {
+    await write(`{ "accounts": { "perso": { "password": 'Tr0ub4dor&3-horse-Battery' } } }`);
+
+    const failure = await loadConfig(path).catch((error: Error) => error);
+
+    expect(failure).toBeInstanceOf(ConfigError);
+    expect((failure as Error).message).not.toMatch(/Tr0ub|Battery|password/);
   });
 
   it('refuses a password with a message of its own', async () => {

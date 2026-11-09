@@ -90,9 +90,10 @@ export async function loadConfig(path: string): Promise<Config> {
   let json: unknown;
   try {
     json = JSON.parse(text);
-  } catch (error) {
+  } catch {
+    // Not JSON.parse's message: it quotes the text around the error, which may be a password.
     throw new ConfigError(
-      `Configuration file ${path} is not valid JSON: ${(error as Error).message}`,
+      `Configuration file ${path} is not valid JSON: keys and strings take double quotes, and no comma ends a list.`,
     );
   }
 
