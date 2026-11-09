@@ -7,7 +7,7 @@ let user: TestUser;
 let tools: Awaited<ReturnType<typeof toolsFor>>;
 const uid: Record<string, number> = {};
 
-const NAMES = ['plain', 'latin1', 'html-only', 'encoded-names', 'forwarded'];
+const NAMES = ['plain', 'latin1', 'html-only', 'encoded-names', 'forwarded', 'named-body'];
 
 beforeAll(async () => {
   user = await createUser();
@@ -52,6 +52,13 @@ describe('read-message on GreenMail', () => {
         { part: '2', filename: 'résumé.txt', contentType: 'text/plain' },
         { part: '3', filename: 'facture n°1.pdf', contentType: 'application/pdf' },
       ],
+    });
+  });
+
+  it('reads a body part that carries a file name as the body', async () => {
+    expect(await read('named-body')).toMatchObject({
+      body: { format: 'text', text: 'The body carries a file name.', truncated: false },
+      attachments: [],
     });
   });
 

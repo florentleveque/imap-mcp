@@ -13,6 +13,7 @@ export const FIXTURES = [
   'encoded-names',
   'latin1',
   'inline-text',
+  'named-body',
 ];
 
 export const rawFixture = (name: string): string =>

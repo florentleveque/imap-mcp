@@ -862,5 +862,58 @@
         "content": "Q2Fm6SBub3Rlcy4="
       }
     }
+  },
+  "named-body": {
+    "envelope": {
+      "date": "2026-11-02T20:00:00.000Z",
+      "subject": "Named body",
+      "from": [
+        {
+          "name": "Bob",
+          "address": "bob@example.test"
+        }
+      ],
+      "sender": [
+        {
+          "name": "Bob",
+          "address": "bob@example.test"
+        }
+      ],
+      "replyTo": [
+        {
+          "name": "Bob",
+          "address": "bob@example.test"
+        }
+      ],
+      "to": [
+        {
+          "name": "",
+          "address": "reader@example.test"
+        }
+      ],
+      "messageId": "<named-body@example.test>"
+    },
+    "bodyStructure": {
+      "type": "text/plain",
+      "parameters": {
+        "name": "message.txt",
+        "charset": "utf-8"
+      },
+      "encoding": "7bit",
+      "size": 267,
+      "lineCount": 9
+    },
+    "size": 267,
+    "parts": {
+      "1": {
+        "meta": {
+          "expectedSize": 267,
+          "contentType": "text/plain",
+          "charset": "utf-8",
+          "filename": "message.txt"
+        },
+        "content": "VGhlIGJvZHkgY2FycmllcyBhIGZpbGUgbmFtZS4="
+      }
+    }
   }
 }
