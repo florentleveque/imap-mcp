@@ -42,6 +42,16 @@ interface ImapFlowError extends Error {
 const asImapError = (error: unknown): ImapFlowError | undefined =>
   error instanceof Error ? error : undefined;
 
+/** What the person who configured the account can do about a refused certificate. */
+function certificateHint(code: string | undefined, account: Account): string {
+  if (code === 'CERT_HAS_EXPIRED')
+    return "It has expired: the server's administrator has to renew it.";
+  if (code === 'ERR_TLS_CERT_ALTNAME_INVALID') {
+    return `It names another host: check the host of account "${account.name}".`;
+  }
+  return `If the server uses a private CA, set caFile for account "${account.name}".`;
+}
+
 /** Reword what a failed connect means for the person who configured the account. */
 function explainConnectFailure(error: unknown, account: Account): unknown {
   const failure = asImapError(error);
@@ -57,7 +67,7 @@ function explainConnectFailure(error: unknown, account: Account): unknown {
   const code = failure?.code;
   if (CERTIFICATE_CODES.has(code)) {
     return new Error(
-      `The TLS certificate of ${account.host} could not be verified (${code}). If the server uses a private CA, set caFile for account "${account.name}".`,
+      `The TLS certificate of ${account.host} could not be verified (${code}). ${certificateHint(code, account)}`,
     );
   }
   if (UNREACHABLE_CODES.has(code)) return new Error(`Could not reach ${where} (${code}).`);

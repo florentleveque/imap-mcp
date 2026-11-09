@@ -112,13 +112,21 @@ describe('withClient', () => {
         'DEPTH_ZERO_SELF_SIGNED_CERT',
         'UNABLE_TO_VERIFY_LEAF_SIGNATURE',
         'UNABLE_TO_GET_ISSUER_CERT_LOCALLY',
-        'CERT_HAS_EXPIRED',
-        'ERR_TLS_CERT_ALTNAME_INVALID',
       ].map((code): [string, unknown, string] => [
         code,
         errorWith({ code }),
         `The TLS certificate of imap.example.test could not be verified (${code}). If the server uses a private CA, set caFile for account "perso".`,
       ]),
+      [
+        'CERT_HAS_EXPIRED',
+        errorWith({ code: 'CERT_HAS_EXPIRED' }),
+        "The TLS certificate of imap.example.test could not be verified (CERT_HAS_EXPIRED). It has expired: the server's administrator has to renew it.",
+      ],
+      [
+        'ERR_TLS_CERT_ALTNAME_INVALID',
+        errorWith({ code: 'ERR_TLS_CERT_ALTNAME_INVALID' }),
+        'The TLS certificate of imap.example.test could not be verified (ERR_TLS_CERT_ALTNAME_INVALID). It names another host: check the host of account "perso".',
+      ],
       ...[
         'ECONNREFUSED',
         'ENOTFOUND',
