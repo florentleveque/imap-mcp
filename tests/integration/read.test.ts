@@ -62,6 +62,33 @@ describe('read-message on GreenMail', () => {
     });
   });
 
+  it('says a flowed body cut at the download limit was cut', async () => {
+    // Soft line breaks only: the raw part is past the 2 MiB download limit,
+    // while the text left once they are joined is short.
+    const raw = [
+      'From: Eve <eve@example.test>',
+      'To: reader@example.test',
+      'Subject: Flowed',
+      'Date: Mon, 02 Nov 2026 18:00:00 +0000',
+      'Message-ID: <flowed@example.test>',
+      'MIME-Version: 1.0',
+      'Content-Type: text/plain; charset=utf-8; format=flowed',
+      '',
+      `a${' \r\n'.repeat(1_000_000)}end`,
+      '',
+    ].join('\r\n');
+    const other = await createUser();
+    const [flowed] = await seed(other, [{ raw }]);
+    const otherTools = await toolsFor(other);
+    try {
+      expect(await otherTools.json('read-message', { uid: flowed })).toMatchObject({
+        body: { truncated: true },
+      });
+    } finally {
+      await otherTools.cleanup();
+    }
+  });
+
   it('names a UID that is not there', async () => {
     const result = await tools.call('read-message', { uid: 999 });
 

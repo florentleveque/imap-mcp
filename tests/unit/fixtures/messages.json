@@ -770,10 +770,96 @@
         "meta": {
           "expectedSize": 305,
           "contentType": "text/plain",
-          "charset": "utf-8",
+          "charset": "iso-8859-1",
           "encoding": "quoted-printable"
         },
-        "content": "RMOpasOgIHZ1LCDDqXTDqS4="
+        "content": "ROlq4CB2dSwg6XTpLg=="
+      }
+    }
+  },
+  "inline-text": {
+    "envelope": {
+      "date": "2026-11-02T19:00:00.000Z",
+      "subject": "Notes attached inline",
+      "from": [
+        {
+          "name": "Dan",
+          "address": "dan@example.test"
+        }
+      ],
+      "sender": [
+        {
+          "name": "Dan",
+          "address": "dan@example.test"
+        }
+      ],
+      "replyTo": [
+        {
+          "name": "Dan",
+          "address": "dan@example.test"
+        }
+      ],
+      "to": [
+        {
+          "name": "",
+          "address": "reader@example.test"
+        }
+      ],
+      "messageId": "<inline-text@example.test>"
+    },
+    "bodyStructure": {
+      "childNodes": [
+        {
+          "part": "1",
+          "type": "text/plain",
+          "parameters": {
+            "charset": "utf-8"
+          },
+          "encoding": "7bit",
+          "size": 60,
+          "lineCount": 2
+        },
+        {
+          "part": "2",
+          "type": "text/plain",
+          "parameters": {
+            "charset": "iso-8859-1",
+            "name": "notes.txt"
+          },
+          "encoding": "quoted-printable",
+          "size": 175,
+          "lineCount": 4,
+          "disposition": "inline",
+          "dispositionParameters": {
+            "filename": "notes.txt"
+          }
+        }
+      ],
+      "type": "multipart/mixed",
+      "parameters": {
+        "boundary": "mix"
+      }
+    },
+    "size": 496,
+    "parts": {
+      "1": {
+        "meta": {
+          "expectedSize": 496,
+          "contentType": "text/plain",
+          "charset": "utf-8"
+        },
+        "content": "VGhlIG5vdGVzIGZvbGxvdy4="
+      },
+      "2": {
+        "meta": {
+          "expectedSize": 496,
+          "contentType": "text/plain",
+          "charset": "iso-8859-1",
+          "encoding": "quoted-printable",
+          "disposition": "inline",
+          "filename": "notes.txt"
+        },
+        "content": "Q2Fm6SBub3Rlcy4="
       }
     }
   }

@@ -65,8 +65,10 @@ export class FakeMailClient {
       .map(({ parts: _parts, ...message }) => ({ seq: message.uid, ...message }));
   }
 
-  async download(uid: string, part: string, options: { maxBytes?: number }) {
+  async download(uid: string, part: string, options: { maxBytes?: number; decodeText?: boolean }) {
     this.calls.push(`download ${uid} ${part} ${JSON.stringify(options)}`);
+    // The recording holds parts as decodeText: false returns them.
+    if (options.decodeText !== false) throw new Error('the fake only replays decodeText: false');
     const stored = this.messages.find((message) => String(message.uid) === uid)?.parts[part];
     if (!stored) return {};
     const content = stored.content.subarray(0, options.maxBytes ?? stored.content.length);

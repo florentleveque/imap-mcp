@@ -1,6 +1,6 @@
 /**
  * Records what imapflow returns for each MIME fixture on GreenMail (envelope,
- * body structure, decoded parts) into tests/unit/fixtures/messages.json, which
+ * body structure, parts with the transfer encoding removed) into tests/unit/fixtures/messages.json, which
  * the unit fake replays. Run with `-u` to re-record; otherwise a difference
  * fails here, before the unit tests drift from the real client.
  */
@@ -42,7 +42,10 @@ describe('the MIME fixtures', () => {
         if (!message?.bodyStructure) throw new Error(`no structure for ${name}`);
         const parts: Record<string, unknown> = {};
         for (const part of leafParts(message.bodyStructure)) {
-          const { meta, content } = await client.download(String(uid), part, { uid: true });
+          const { meta, content } = await client.download(String(uid), part, {
+            uid: true,
+            decodeText: false,
+          });
           parts[part] = { meta, content: (await buffer(content)).toString('base64') };
         }
         record[name] = {

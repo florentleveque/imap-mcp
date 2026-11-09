@@ -12,7 +12,7 @@ let tools: Awaited<ReturnType<typeof toolsFor>>;
 let directory: string;
 const uid: Record<string, number> = {};
 
-const NAMES = ['attachment', 'inline-named', 'encoded-names'];
+const NAMES = ['attachment', 'inline-named', 'encoded-names', 'inline-text'];
 
 beforeAll(async () => {
   user = await createUser();
@@ -55,6 +55,20 @@ describe('get-attachment on GreenMail', () => {
     expect(result.content[1]).toStrictEqual({ type: 'text', text: 'CV text.' });
   });
 
+  it('returns an inline Latin-1 text file as text', async () => {
+    const result = await tools.call('get-attachment', { uid: uid['inline-text'], part: '2' });
+
+    expect(result.content[1]).toStrictEqual({ type: 'text', text: 'Café notes.' });
+  });
+
+  it('saves an inline text file with the bytes it was sent in', async () => {
+    const args = { uid: uid['inline-text'], part: '2', mode: 'file' };
+
+    const saved = (await tools.json('get-attachment', args)) as { savedTo: string };
+
+    expect(await readFile(saved.savedTo)).toStrictEqual(Buffer.from('Café notes.', 'latin1'));
+  });
+
   it('saves twice to two files, under the decoded name, never overwriting', async () => {
     const args = { uid: uid['encoded-names'], part: '3', mode: 'file' };
 
@@ -64,9 +78,7 @@ describe('get-attachment on GreenMail', () => {
     expect(first.savedTo).toBe(join(directory, 'facture n°1.pdf'));
     expect(second.savedTo).toBe(join(directory, 'facture n°1 (1).pdf'));
     expect(await readFile(second.savedTo, 'utf8')).toBe('%PDF-1.4 invoice');
-    expect((await readdir(directory)).sort()).toStrictEqual([
-      'facture n°1 (1).pdf',
-      'facture n°1.pdf',
-    ]);
+    const invoices = (await readdir(directory)).filter((name) => name.startsWith('facture'));
+    expect(invoices.sort()).toStrictEqual(['facture n°1 (1).pdf', 'facture n°1.pdf']);
   });
 });

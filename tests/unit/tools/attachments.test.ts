@@ -19,6 +19,7 @@ async function serving(attachments: Record<string, unknown> = {}) {
     fixtureMessage('inline-named', 2),
     fixtureMessage('encoded-names', 3),
     fixtureMessage('forwarded', 4),
+    fixtureMessage('inline-text', 10),
   ];
   return server;
 }
@@ -90,7 +91,7 @@ describe('get-attachment, in the result', () => {
 
     expect(server.client.calls.slice(2, 4)).toStrictEqual([
       'fetch [1] uid,bodyStructure {"uid":true}',
-      'download 1 2 {"uid":true,"maxBytes":1048577}',
+      'download 1 2 {"uid":true,"maxBytes":1048577,"decodeText":false}',
     ]);
   });
 
@@ -128,6 +129,14 @@ describe('get-attachment, in the result', () => {
     expect(result.content[1]).toStrictEqual({ type: 'text', text: 'café' });
   });
 
+  it('decodes an inline text file sent in Latin-1', async () => {
+    const server = await serving();
+
+    const result = await server.call('get-attachment', { account: 'perso', uid: 10, part: '2' });
+
+    expect(result.content[1]).toStrictEqual({ type: 'text', text: 'Café notes.' });
+  });
+
   it('reads a text file as UTF-8 when its charset is unknown', async () => {
     const server = await serving();
     const message = fixtureMessage('encoded-names', 5);
@@ -145,7 +154,9 @@ describe('get-attachment, in the result', () => {
     expect(await server.error('get-attachment', { account: 'perso', uid: 1, part: '2' })).toBe(
       'The attachment is larger than 10 bytes, the attachments.maxInlineBytes limit. Save it with mode "file" instead; that needs attachments.directory in the configuration file.',
     );
-    expect(server.client.calls).toContain('download 1 2 {"uid":true,"maxBytes":11}');
+    expect(server.client.calls).toContain(
+      'download 1 2 {"uid":true,"maxBytes":11,"decodeText":false}',
+    );
   });
 
   it('accepts an attachment of exactly the limit', async () => {
@@ -198,7 +209,26 @@ describe('get-attachment, to a file', () => {
     expect(second.savedTo).toBe(join(directory, 'facture n°1 (1).pdf'));
     expect(await readFile(first.savedTo, 'utf8')).toBe('%PDF-1.4 invoice');
     expect((await readdir(directory)).length).toBe(2);
-    expect(configured.client.calls).toContain('download 3 3 {"uid":true}');
+    expect(configured.client.calls).toContain('download 3 3 {"uid":true,"decodeText":false}');
+  });
+
+  it('saves an inline text file with the bytes it was sent in', async () => {
+    const server = await serving();
+    const directory = join(server.dir, 'saved');
+    await server.cleanup();
+    const configured = await serving({ directory });
+
+    const saved = metadata(
+      await configured.call('get-attachment', {
+        account: 'perso',
+        uid: 10,
+        part: '2',
+        mode: 'file',
+      }),
+    );
+
+    expect(await readFile(saved.savedTo, 'latin1')).toBe('Café notes.');
+    expect(saved.bytes).toBe(11);
   });
 
   it('names an attachment that has no name after its message and part', async () => {

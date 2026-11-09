@@ -1,0 +1,19 @@
+From: Dan <dan@example.test>
+To: reader@example.test
+Subject: Notes attached inline
+Date: Mon, 02 Nov 2026 19:00:00 +0000
+Message-ID: <inline-text@example.test>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="mix"
+
+--mix
+Content-Type: text/plain; charset=utf-8
+
+The notes follow.
+--mix
+Content-Type: text/plain; charset=iso-8859-1; name="notes.txt"
+Content-Disposition: inline; filename="notes.txt"
+Content-Transfer-Encoding: quoted-printable
+
+Caf=E9 notes.
+--mix--

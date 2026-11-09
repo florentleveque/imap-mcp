@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { safeFileName, saveUnique } from '../attachments.js';
 import { downloadPart, findAttachment } from '../imap/attachment.js';
 import { withMailbox } from '../imap/session.js';
+import { decodeText } from '../imap/text.js';
 import { jsonResult } from '../mcp-format.js';
 import { untrusted } from '../untrusted.js';
 import { defineTool, loadAccount, READ_ONLY, type ToolDefinition } from './definitions.js';
@@ -13,16 +14,6 @@ import { accountField, folderField, uidField } from './fields.js';
 
 // The picture formats MCP clients render; any other image goes as a file.
 const IMAGE_TYPES = new Set(['image/png', 'image/jpeg', 'image/gif', 'image/webp']);
-
-function decodeText(bytes: Buffer, charset: string | undefined): string {
-  try {
-    // TextDecoder reads an undefined label as UTF-8.
-    return new TextDecoder(charset).decode(bytes);
-  } catch {
-    // A charset label TextDecoder does not know.
-    return bytes.toString('utf8');
-  }
-}
 
 function contentBlock(
   bytes: Buffer,

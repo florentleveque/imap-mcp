@@ -12,6 +12,7 @@ export const FIXTURES = [
   'forwarded',
   'encoded-names',
   'latin1',
+  'inline-text',
 ];
 
 export const rawFixture = (name: string): string =>

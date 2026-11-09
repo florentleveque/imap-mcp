@@ -10,9 +10,13 @@
 `read-message` fetches the envelope and the BODYSTRUCTURE, then downloads the
 body part only: the first unnamed `text/plain`, or else the first unnamed
 `text/html`, converted by `html-to-text`. `get-attachment` downloads the one
-part it serves. imapflow's `download` removes the transfer encoding and turns
-body text into UTF-8; its BODYSTRUCTURE already decodes RFC 2047 and RFC 2231
-file names (seen on GreenMail, `tests/unit/fixtures/messages.json`).
+part it serves. Both download with `decodeText: false`: imapflow then removes
+the transfer encoding only. Its text conversion would re-encode an inline text
+attachment in UTF-8 and unwrap `format=flowed`, so a saved file would differ
+from what was sent and the byte limit would count unwrapped text, hiding a
+cut. `src/imap/text.ts` reads the bytes in the charset the part declares.
+imapflow's BODYSTRUCTURE already decodes RFC 2047 and RFC 2231 file names
+(seen on GreenMail, `tests/unit/fixtures/messages.json`).
 
 Parsing the whole message with mailparser was the alternative. It transfers
 every attachment on every read, so a 20 MB message costs 20 MB each time, and
@@ -48,7 +52,8 @@ Stryker runs `vitest.config.ts`, which must not need Docker. So every line of
 The fake replays what imapflow really returned. The synthetic `.eml` files in
 `tests/integration/fixtures/mail/` are appended to GreenMail, and
 `tests/integration/message-fixtures.test.ts` records the envelope, the
-structure and every decoded part into `tests/unit/fixtures/messages.json`
+structure and every part, as `decodeText: false` returns it, into
+`tests/unit/fixtures/messages.json`
 (Vitest file snapshot): a change in imapflow or GreenMail fails there first.
 The rest of `tests/integration/` runs the tools end to end on GreenMail. That
 directory sits outside the mutation cache key, as `tests/functional/` does,

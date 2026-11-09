@@ -57,7 +57,7 @@ describe('read-message', () => {
       'connect (error listener set)',
       'lock Archives {"readOnly":true}',
       'fetch [7] uid,envelope,flags,internalDate,size,bodyStructure {"uid":true}',
-      'download 7 1 {"uid":true,"maxBytes":2097153}',
+      'download 7 1 {"uid":true,"maxBytes":2097153,"decodeText":false}',
       'release Archives',
       'logout',
     ]);
