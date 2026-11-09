@@ -3,8 +3,14 @@ import { buffer } from 'node:stream/consumers';
 import { convert } from 'html-to-text';
 
 import type { MailClient } from './client.js';
-import { formatAddress, type MessageSummary, SUMMARY_FIELDS, summarize } from './messages.js';
-import { type AttachmentInfo, messageParts } from './structure.js';
+import {
+  formatAddress,
+  type MessageSummary,
+  partsOf,
+  SUMMARY_FIELDS,
+  summarize,
+} from './messages.js';
+import type { AttachmentInfo } from './structure.js';
 import { decodeText } from './text.js';
 
 // What one body may cost: the download stops at BODY_BYTES, the text handed
@@ -85,9 +91,9 @@ export async function readMessage(
 ): Promise<MessageContent> {
   const [message] = await client.fetchAll([uid], SUMMARY_FIELDS, { uid: true });
   if (!message) throw missingMessage(folder, uid);
-  const { hasAttachments: _hasAttachments, ...summary } = summarize(message);
-  const { envelope = {}, bodyStructure } = message;
-  const parts = bodyStructure ? messageParts(bodyStructure) : { attachments: [] };
+  const parts = partsOf(message);
+  const { hasAttachments: _hasAttachments, ...summary } = summarize(message, parts);
+  const { envelope = {} } = message;
   return {
     ...summary,
     messageId: envelope.messageId ?? '',

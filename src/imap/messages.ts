@@ -1,7 +1,7 @@
 import type { FetchMessageObject, MessageAddressObject, SearchObject } from 'imapflow';
 
 import type { MailClient } from './client.js';
-import { messageParts } from './structure.js';
+import { type MessageParts, messageParts } from './structure.js';
 
 export interface MessageFilters {
   unseenOnly?: boolean;
@@ -57,8 +57,12 @@ function messageDate(...candidates: (Date | string | undefined)[]): string {
   return '';
 }
 
-export function summarize(message: FetchMessageObject): MessageSummary {
-  const { envelope = {}, flags = new Set<string>(), bodyStructure } = message;
+/** Where the body and attachments are; a message the server gave no structure for has none. */
+export const partsOf = ({ bodyStructure }: FetchMessageObject): MessageParts =>
+  bodyStructure ? messageParts(bodyStructure) : { attachments: [] };
+
+export function summarize(message: FetchMessageObject, parts = partsOf(message)): MessageSummary {
+  const { envelope = {}, flags = new Set<string>() } = message;
   return {
     uid: message.uid,
     date: messageDate(message.internalDate, envelope.date),
@@ -68,7 +72,7 @@ export function summarize(message: FetchMessageObject): MessageSummary {
     seen: flags.has('\\Seen'),
     flagged: flags.has('\\Flagged'),
     size: message.size,
-    hasAttachments: bodyStructure ? messageParts(bodyStructure).attachments.length > 0 : false,
+    hasAttachments: parts.attachments.length > 0,
   };
 }
 
@@ -89,6 +93,6 @@ export async function findMessages(
   const fetched = await client.fetchAll(newest, SUMMARY_FIELDS, { uid: true });
   return {
     total: uids.length,
-    messages: fetched.toSorted((a, b) => b.uid - a.uid).map(summarize),
+    messages: fetched.toSorted((a, b) => b.uid - a.uid).map((message) => summarize(message)),
   };
 }
