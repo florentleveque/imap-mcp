@@ -21,6 +21,8 @@ describe('safeFileName', () => {
     ['  spaced  ', 'spaced'],
     ['CON', '_CON'],
     ['CON  ', '_CON'],
+    ['CON .txt', '_CON .txt'],
+    [`con${' '.repeat(250)}x`, '_con'],
     ['nul.txt', '_nul.txt'],
     ['com1.log', '_com1.log'],
     ['LPT9', '_LPT9'],

@@ -3,8 +3,8 @@ import { extname, join } from 'node:path';
 import type { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 
-// Windows device names, reserved whatever the extension.
-const RESERVED = /^(con|prn|aux|nul|com\d|lpt\d)(\..*)?$/i;
+// Windows device names, reserved whatever the extension and the spaces before it.
+const RESERVED = /^(con|prn|aux|nul|com\d|lpt\d)\s*(\..*)?$/i;
 
 // Most file systems cap a name at 255 bytes; keep a margin for " (n)".
 const MAX_BYTES = 200;
@@ -14,7 +14,6 @@ const FORBIDDEN = new Set('<>:"|?*');
 const PATH_SEPARATORS = /[/\\]/;
 const DOTS_ONLY = /^\.*$/;
 const EDGE_DOTS_AND_SPACES = /^[.\s]+|[.\s]+$/g;
-const TRAILING_DOTS_AND_SPACES = /[.\s]+$/;
 
 // Control, format and line-separator characters: invisible, and a
 // right-to-left override can make a name read with another extension.
@@ -50,15 +49,16 @@ function shorten(name: string): string {
  * leading dot. `fallback` names what nothing usable is left of.
  */
 export function safeFileName(name: string | undefined, fallback: string): string {
-  const safe = Array.from(name ?? '', (char) => (isUnsafe(char) ? '_' : char))
+  const cleaned = Array.from(name ?? '', (char) => (isUnsafe(char) ? '_' : char))
     .join('')
     .split(PATH_SEPARATORS)
     .filter((piece) => !DOTS_ONLY.test(piece))
-    .join('_')
-    .replace(EDGE_DOTS_AND_SPACES, '');
+    .join('_');
+  // Trimmed after the cut, which can end the name on a dot or a space (Windows
+  // strips those), and checked for a device name last, on the final name.
+  const safe = shorten(cleaned).replace(EDGE_DOTS_AND_SPACES, '');
   if (safe === '') return fallback;
-  // The cut can end the name on a dot or a space, which Windows strips.
-  return shorten(RESERVED.test(safe) ? `_${safe}` : safe).replace(TRAILING_DOTS_AND_SPACES, '');
+  return RESERVED.test(safe) ? `_${safe}` : safe;
 }
 
 /**
