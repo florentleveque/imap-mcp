@@ -9,6 +9,7 @@ import { readFileSync } from 'node:fs';
 import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { ImapFlow } from 'imapflow';
 import { inject } from 'vitest';
@@ -18,7 +19,7 @@ import { openImapFlow } from '../../src/imap/client.js';
 import type { SessionDeps } from '../../src/imap/session.js';
 import { LoopbackTransport, openSession } from '../unit/server-harness.js';
 
-export const testCaPath = new URL('fixtures/tls/ca.pem', import.meta.url).pathname;
+export const testCaPath = fileURLToPath(new URL('fixtures/tls/ca.pem', import.meta.url));
 export const testCa = readFileSync(testCaPath, 'utf8');
 
 export function greenmail() {
