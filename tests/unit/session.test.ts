@@ -112,6 +112,8 @@ describe('withClient', () => {
         'DEPTH_ZERO_SELF_SIGNED_CERT',
         'UNABLE_TO_VERIFY_LEAF_SIGNATURE',
         'UNABLE_TO_GET_ISSUER_CERT_LOCALLY',
+        'UNABLE_TO_GET_ISSUER_CERT',
+        'CERT_UNTRUSTED',
       ].map((code): [string, unknown, string] => [
         code,
         errorWith({ code }),
