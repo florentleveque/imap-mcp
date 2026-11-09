@@ -70,7 +70,8 @@ export async function saveUnique(
   name: string,
   content: Readable,
 ): Promise<{ path: string; size: number }> {
-  await mkdir(directory, { recursive: true });
+  // Owner only: attachments are often private (contracts, payslips).
+  await mkdir(directory, { recursive: true, mode: 0o700 });
   const ext = extname(name);
   const stem = name.slice(0, name.length - ext.length);
   for (let copy = 0; ; copy++) {
@@ -78,7 +79,7 @@ export async function saveUnique(
     let file: Awaited<ReturnType<typeof open>>;
     try {
       // `wx` fails when the file exists, atomically: no check-then-write race.
-      file = await open(path, 'wx');
+      file = await open(path, 'wx', 0o600);
     } catch (error) {
       const { code } = error as NodeJS.ErrnoException;
       if (code === 'EEXIST') continue;

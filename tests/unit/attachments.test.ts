@@ -1,4 +1,4 @@
-import { chmod, mkdir, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { chmod, mkdir, mkdtemp, readdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { Readable } from 'node:stream';
@@ -103,6 +103,18 @@ describe('saveUnique', () => {
 
     expect(saved).toStrictEqual({ path: join(target, 'report.pdf'), size: 9 });
     expect(await readFile(saved.path, 'utf8')).toBe('PDF bytes');
+  });
+
+  it('keeps what it creates readable by its owner only', async () => {
+    const target = join(dir, 'nested', 'attachments');
+
+    const saved = await saveUnique(target, 'payslip.pdf', stream('private'));
+
+    // The last three octal digits of the mode: owner, group, others.
+    const permissions = async (path: string) => (await stat(path)).mode.toString(8).slice(-3);
+    expect(await permissions(saved.path)).toBe('600');
+    expect(await permissions(target)).toBe('700');
+    expect(await permissions(join(dir, 'nested'))).toBe('700');
   });
 
   it('never overwrites: a second file gets a numbered name', async () => {

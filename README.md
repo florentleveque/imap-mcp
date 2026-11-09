@@ -55,7 +55,7 @@ A JSON file, by default `~/.config/imap-mcp/config.json` on every system, or the
   - `port`: when the server does not use the default of its mode.
   - `caFile`: an absolute path to an extra certificate authority to trust, for a server with a private CA. Certificate verification cannot be turned off.
 - `attachments`, optional:
-  - `directory`: an absolute path where `save-attachment` saves files. Without it, that tool is refused. Saved files get a cleaned-up name and never overwrite an existing file.
+  - `directory`: an absolute path where `save-attachment` saves files. Without it, that tool is refused. Saved files get a cleaned-up name, are readable by their owner only (as are the folders created for them), and never overwrite an existing file.
   - `maxInlineBytes`: the largest attachment returned in a result, 1 MiB by default.
 
 Passwords never go in this file: a `password` key is refused.
