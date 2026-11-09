@@ -8,6 +8,13 @@ const reference = {
     id: { type: 'string', description: 'The id' },
     count: { type: 'number', description: 'How many', minimum: 1, maximum: 100 },
     kind: { type: 'string', description: 'Which kind', enum: ['a', 'b'] },
+    day: {
+      type: 'string',
+      description: 'A day',
+      format: 'date',
+      pattern: '^\\d{4}-\\d{2}-\\d{2}$',
+    },
+    uid: { type: 'integer', description: 'A UID', exclusiveMinimum: 0, exclusiveMaximum: 100 },
     items: {
       type: 'array',
       description: 'Things',
@@ -41,6 +48,7 @@ describe('schemaWeakenings', () => {
       Object.assign(schema, { $schema: 'https://json-schema.org/draft/2020-12/schema' });
       Object.assign(schema.properties.id, { minLength: 1 });
       Object.assign(schema.properties.count, { type: 'integer', minimum: 2, maximum: 50 });
+      Object.assign(schema.properties.uid, { exclusiveMinimum: 1, exclusiveMaximum: 99 });
       schema.properties.kind.enum = ['a'];
       Object.assign(schema.properties, { extra: { type: 'boolean', default: false } });
       schema.required = ['id', 'count'];
@@ -85,6 +93,28 @@ describe('schemaWeakenings', () => {
       '$.kind: enum widened with c',
       '$.items: minItems 1 loosened',
       '$.items: maxItems 10 loosened',
+    ]);
+  });
+
+  it('reports a pattern or a format dropped or changed, which it cannot judge', () => {
+    const candidate = variant((schema) => {
+      Object.assign(schema.properties.day, { format: undefined, pattern: '^.*$' });
+    });
+
+    expect(schemaWeakenings(reference, candidate)).toEqual([
+      '$.day: pattern ^\\d{4}-\\d{2}-\\d{2}$ dropped or changed',
+      '$.day: format date dropped or changed',
+    ]);
+  });
+
+  it('reports an exclusive bound loosened or dropped', () => {
+    const candidate = variant((schema) => {
+      Object.assign(schema.properties.uid, { exclusiveMinimum: undefined, exclusiveMaximum: 101 });
+    });
+
+    expect(schemaWeakenings(reference, candidate)).toEqual([
+      '$.uid: exclusiveMinimum 0 loosened',
+      '$.uid: exclusiveMaximum 100 loosened',
     ]);
   });
 

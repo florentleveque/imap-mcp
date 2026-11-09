@@ -7,8 +7,11 @@
 
 type JsonSchema = Record<string, unknown>;
 
-const LOWER_BOUNDS = ['minimum', 'minLength', 'minItems'] as const;
-const UPPER_BOUNDS = ['maximum', 'maxLength', 'maxItems'] as const;
+const LOWER_BOUNDS = ['minimum', 'exclusiveMinimum', 'minLength', 'minItems'] as const;
+const UPPER_BOUNDS = ['maximum', 'exclusiveMaximum', 'maxLength', 'maxItems'] as const;
+// Whether a new pattern or format accepts less cannot be told mechanically:
+// any change is reported, for a reviewer to judge.
+const EXACT = ['pattern', 'format'] as const;
 
 function isSchema(value: unknown): value is JsonSchema {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -59,6 +62,13 @@ export function schemaWeakenings(
     const next = candidate[key];
     if (typeof bound === 'number' && !(typeof next === 'number' && next <= bound)) {
       found.push(`${path}: ${key} ${bound} loosened`);
+    }
+  }
+
+  for (const key of EXACT) {
+    const value = reference[key];
+    if (value !== undefined && candidate[key] !== value) {
+      found.push(`${path}: ${key} ${String(value)} dropped or changed`);
     }
   }
 
