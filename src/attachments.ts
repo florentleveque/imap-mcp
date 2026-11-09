@@ -14,6 +14,7 @@ const FORBIDDEN = new Set('<>:"|?*');
 const PATH_SEPARATORS = /[/\\]/;
 const DOTS_ONLY = /^\.*$/;
 const EDGE_DOTS_AND_SPACES = /^[.\s]+|[.\s]+$/g;
+const TRAILING_DOTS_AND_SPACES = /[.\s]+$/;
 
 // Control, format and line-separator characters: invisible, and a
 // right-to-left override can make a name read with another extension.
@@ -57,7 +58,7 @@ export function safeFileName(name: string | undefined, fallback: string): string
     .replace(EDGE_DOTS_AND_SPACES, '');
   if (safe === '') return fallback;
   // The cut can end the name on a dot or a space, which Windows strips.
-  return shorten(RESERVED.test(safe) ? `_${safe}` : safe).replace(EDGE_DOTS_AND_SPACES, '');
+  return shorten(RESERVED.test(safe) ? `_${safe}` : safe).replace(TRAILING_DOTS_AND_SPACES, '');
 }
 
 /**

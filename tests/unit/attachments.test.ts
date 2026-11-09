@@ -20,6 +20,7 @@ describe('safeFileName', () => {
     ['trailing. . ', 'trailing'],
     ['  spaced  ', 'spaced'],
     ['CON', '_CON'],
+    ['CON  ', '_CON'],
     ['nul.txt', '_nul.txt'],
     ['com1.log', '_com1.log'],
     ['LPT9', '_LPT9'],
@@ -72,6 +73,9 @@ describe('safeFileName', () => {
   it('drops a dot or space the cut leaves at the end, which Windows would strip', () => {
     expect(safeFileName(`${'x'.repeat(199)}.${'y'.repeat(100)}`, 'fallback')).toBe('x'.repeat(199));
     expect(safeFileName(`${'x'.repeat(199)} ${'y'.repeat(100)}`, 'fallback')).toBe('x'.repeat(199));
+    expect(safeFileName(`${'x'.repeat(198)} .${'y'.repeat(100)}`, 'fallback')).toBe(
+      'x'.repeat(198),
+    );
   });
 
   it('shortens a very long name at once', () => {
