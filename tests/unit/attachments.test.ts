@@ -69,6 +69,11 @@ describe('safeFileName', () => {
     expect(safeFileName(`report.${'y'.repeat(250)}`, 'fallback')).toBe(`report.${'y'.repeat(193)}`);
   });
 
+  it('drops a dot or space the cut leaves at the end, which Windows would strip', () => {
+    expect(safeFileName(`${'x'.repeat(199)}.${'y'.repeat(100)}`, 'fallback')).toBe('x'.repeat(199));
+    expect(safeFileName(`${'x'.repeat(199)} ${'y'.repeat(100)}`, 'fallback')).toBe('x'.repeat(199));
+  });
+
   it('shortens a very long name at once', () => {
     expect(safeFileName(`${'a'.repeat(100_000)}.pdf`, 'fallback')).toBe(`${'a'.repeat(196)}.pdf`);
   });

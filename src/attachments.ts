@@ -56,7 +56,8 @@ export function safeFileName(name: string | undefined, fallback: string): string
     .join('_')
     .replace(EDGE_DOTS_AND_SPACES, '');
   if (safe === '') return fallback;
-  return shorten(RESERVED.test(safe) ? `_${safe}` : safe);
+  // The cut can end the name on a dot or a space, which Windows strips.
+  return shorten(RESERVED.test(safe) ? `_${safe}` : safe).replace(EDGE_DOTS_AND_SPACES, '');
 }
 
 /**
