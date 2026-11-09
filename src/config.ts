@@ -87,9 +87,11 @@ export async function loadConfig(path: string): Promise<Config> {
     throw error;
   }
 
+  // JSON.parse refuses the byte-order mark some Windows editors write.
+  const body = text.startsWith('﻿') ? text.slice(1) : text;
   let json: unknown;
   try {
-    json = JSON.parse(text);
+    json = JSON.parse(body);
   } catch {
     // Not JSON.parse's message: it quotes the text around the error, which may be a password.
     throw new ConfigError(

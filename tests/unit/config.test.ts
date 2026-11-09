@@ -104,6 +104,12 @@ describe('loadConfig', () => {
     );
   });
 
+  it('reads a file that starts with a byte-order mark, as Windows editors write it', async () => {
+    await write(`\uFEFF${JSON.stringify({ accounts: { perso: account } })}`);
+
+    expect((await loadConfig(path)).accounts.map(({ name }) => name)).toStrictEqual(['perso']);
+  });
+
   it('quotes nothing of an invalid file, which may hold a password', async () => {
     await write(`{ "accounts": { "perso": { "password": 'Tr0ub4dor&3-horse-Battery' } } }`);
 
