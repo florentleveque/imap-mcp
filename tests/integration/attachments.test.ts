@@ -30,7 +30,7 @@ afterAll(async () => {
   await rm(dirname(directory), { recursive: true, force: true });
 });
 
-describe('get-attachment on GreenMail', () => {
+describe('get-attachment and save-attachment on GreenMail', () => {
   it('returns the original bytes of a document', async () => {
     const result = await tools.call('get-attachment', { uid: uid['attachment'], part: '2' });
 
@@ -62,18 +62,18 @@ describe('get-attachment on GreenMail', () => {
   });
 
   it('saves an inline text file with the bytes it was sent in', async () => {
-    const args = { uid: uid['inline-text'], part: '2', mode: 'file' };
+    const args = { uid: uid['inline-text'], part: '2' };
 
-    const saved = (await tools.json('get-attachment', args)) as { savedTo: string };
+    const saved = (await tools.json('save-attachment', args)) as { savedTo: string };
 
     expect(await readFile(saved.savedTo)).toStrictEqual(Buffer.from('Café notes.', 'latin1'));
   });
 
   it('saves twice to two files, under the decoded name, never overwriting', async () => {
-    const args = { uid: uid['encoded-names'], part: '3', mode: 'file' };
+    const args = { uid: uid['encoded-names'], part: '3' };
 
-    const first = (await tools.json('get-attachment', args)) as { savedTo: string };
-    const second = (await tools.json('get-attachment', args)) as { savedTo: string };
+    const first = (await tools.json('save-attachment', args)) as { savedTo: string };
+    const second = (await tools.json('save-attachment', args)) as { savedTo: string };
 
     expect(first.savedTo).toBe(join(directory, 'facture n°1.pdf'));
     expect(second.savedTo).toBe(join(directory, 'facture n°1 (1).pdf'));

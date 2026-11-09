@@ -26,7 +26,7 @@ never guess them.
    `from`, `subject` and `attachments`.
 10. `get-attachment` on that message, `{"part": "2"}`. Record the type and
     content of each content block after the first.
-11. `get-attachment` on that message, `{"part": "3", "mode": "file"}`, twice.
+11. `save-attachment` on that message, `{"part": "3"}`, twice.
     Record `savedTo` both times, then run `ls .functional/attachments`.
 12. `get-attachment` on that message, `{"part": "1"}`. Record the result.
 13. `list-messages` with `{"unseenOnly": true}` again. Record `total`.

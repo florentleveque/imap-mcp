@@ -41,3 +41,8 @@ export const uidField = z
   .int()
   .positive()
   .describe('UID of the message in the folder, as list-messages and search-messages return it.');
+
+export const partField = z
+  .string()
+  .regex(/^\d+(\.\d+)*$/)
+  .describe('Part id of the attachment, as read-message lists it, such as "2" or "1.3".');

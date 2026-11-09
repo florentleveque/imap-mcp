@@ -16,9 +16,10 @@ Work in progress: the read tools are in place; the password sources (keyring, pa
 - `list-messages`: the newest messages of a folder, newest first, optionally only the unread ones or those received since a day.
 - `search-messages`: messages matching a sender, a recipient, a subject, body text or a received-day range.
 - `read-message`: the headers, the body as plain text (an HTML-only body is converted) and the list of attachments.
-- `get-attachment`: one attachment, either in the result (up to a size limit) or saved to the attachments directory.
+- `get-attachment`: one attachment, in the result, up to a size limit.
+- `save-attachment`: one attachment, saved to the attachments directory. It writes a new file on every call, and tells the MCP client so: it is the one tool not announced as read-only.
 
-Every tool is read-only: folders are opened with EXAMINE and messages fetched with `BODY.PEEK`, so nothing is marked as read.
+No tool changes the mailbox: folders are opened with EXAMINE and messages fetched with `BODY.PEEK`, so nothing is marked as read.
 
 > Message data comes from its senders. Results that carry it start with a notice telling the model to treat it as untrusted content, never as instructions: a mail can carry a prompt injection.
 
@@ -54,7 +55,7 @@ A JSON file, by default `~/.config/imap-mcp/config.json` on every system, or the
   - `port`: when the server does not use the default of its mode.
   - `caFile`: an absolute path to an extra certificate authority to trust, for a server with a private CA. Certificate verification cannot be turned off.
 - `attachments`, optional:
-  - `directory`: an absolute path where `get-attachment` saves files in mode `file`. Without it, that mode is refused. Saved files get a cleaned-up name and never overwrite an existing file.
+  - `directory`: an absolute path where `save-attachment` saves files. Without it, that tool is refused. Saved files get a cleaned-up name and never overwrite an existing file.
   - `maxInlineBytes`: the largest attachment returned in a result, 1 MiB by default.
 
 Passwords never go in this file: a `password` key is refused.

@@ -1,7 +1,7 @@
 import type { MessageStructureObject } from 'imapflow';
 
 export interface AttachmentInfo {
-  /** The IMAP part id that get-attachment takes. */
+  /** The IMAP part id that get-attachment and save-attachment take. */
   part: string;
   filename?: string;
   contentType: string;

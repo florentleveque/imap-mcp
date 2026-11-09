@@ -51,6 +51,14 @@ export const READ_ONLY: ToolAnnotations = {
   openWorldHint: true,
 };
 
+/** Reads the mailbox and writes a new local file on every call, never over an existing one. */
+export const SAVES_FILE: ToolAnnotations = {
+  readOnlyHint: false,
+  destructiveHint: false,
+  idempotentHint: false,
+  openWorldHint: true,
+};
+
 /** The configuration as it stands now, and the account a call names. */
 export async function loadAccount(
   context: ToolContext,

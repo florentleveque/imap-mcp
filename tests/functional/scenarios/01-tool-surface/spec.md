@@ -11,8 +11,8 @@ arguments, and what it says about the configured accounts.
 
 1. List every tool of `imap-mcp-dev` available to you (`mcp__imap-mcp-dev__*`).
    Record their names without the prefix and their count.
-2. For `read-message` and `get-attachment`, record the input parameters you
-   see: name, type, whether required, allowed values.
+2. For `read-message`, `get-attachment` and `save-attachment`, record the
+   input parameters you see: name, type, whether required, allowed values.
 3. Call `list-messages` with `{"account": "greenmail", "unread": true}` and
    record the result: error or not, and its text.
 4. Call `search-messages` with `{"account": "greenmail"}` and record the result.
@@ -42,7 +42,7 @@ expected values: `expected.md` is off-limits.
     },
     {
       "id": "A4",
-      "desc": "get-attachment parameters (name, type, required, allowed values)",
+      "desc": "get-attachment and save-attachment parameters (name, type, required, allowed values)",
       "pass": null,
       "actual": null
     },

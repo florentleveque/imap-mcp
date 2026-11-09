@@ -152,7 +152,7 @@ describe('get-attachment, in the result', () => {
     const server = await serving({ maxInlineBytes: 10 });
 
     expect(await server.error('get-attachment', { account: 'perso', uid: 1, part: '2' })).toBe(
-      'The attachment is larger than 10 bytes, the attachments.maxInlineBytes limit. Save it with mode "file" instead; that needs attachments.directory in the configuration file.',
+      'The attachment is larger than 10 bytes, the attachments.maxInlineBytes limit. Save it with save-attachment instead; that needs attachments.directory in the configuration file.',
     );
     expect(server.client.calls).toContain(
       'download 1 2 {"uid":true,"maxBytes":11,"decodeText":false}',
@@ -171,12 +171,12 @@ describe('get-attachment, in the result', () => {
     const server = await serving({ maxInlineBytes: 10, directory: '/srv/attachments' });
 
     expect(await server.error('get-attachment', { account: 'perso', uid: 1, part: '2' })).toBe(
-      'The attachment is larger than 10 bytes, the attachments.maxInlineBytes limit. Save it with mode "file" instead.',
+      'The attachment is larger than 10 bytes, the attachments.maxInlineBytes limit. Save it with save-attachment instead.',
     );
   });
 });
 
-describe('get-attachment, to a file', () => {
+describe('save-attachment', () => {
   it('saves under the attachments directory, with a safe name, and never overwrites', async () => {
     const server = await serving();
     const directory = join(server.dir, 'saved');
@@ -184,19 +184,17 @@ describe('get-attachment, to a file', () => {
     const configured = await serving({ directory });
 
     const first = metadata(
-      await configured.call('get-attachment', {
+      await configured.call('save-attachment', {
         account: 'perso',
         uid: 3,
         part: '3',
-        mode: 'file',
       }),
     );
     const second = metadata(
-      await configured.call('get-attachment', {
+      await configured.call('save-attachment', {
         account: 'perso',
         uid: 3,
         part: '3',
-        mode: 'file',
       }),
     );
 
@@ -219,11 +217,10 @@ describe('get-attachment, to a file', () => {
     const configured = await serving({ directory });
 
     const saved = metadata(
-      await configured.call('get-attachment', {
+      await configured.call('save-attachment', {
         account: 'perso',
         uid: 10,
         part: '2',
-        mode: 'file',
       }),
     );
 
@@ -238,23 +235,33 @@ describe('get-attachment, to a file', () => {
     const configured = await serving({ directory });
 
     const saved = metadata(
-      await configured.call('get-attachment', {
+      await configured.call('save-attachment', {
         account: 'perso',
         uid: 4,
         part: '2',
-        mode: 'file',
       }),
     );
 
     expect(saved.savedTo).toBe(join(directory, 'attachment-4-2'));
   });
 
+  it('only saves a part that read-message lists as an attachment', async () => {
+    const server = await serving();
+    const directory = join(server.dir, 'saved');
+    await server.cleanup();
+    const configured = await serving({ directory });
+
+    expect(await configured.error('save-attachment', { account: 'perso', uid: 1, part: '1' })).toBe(
+      'Message 1 has no attachment with part "1". read-message lists its attachments.',
+    );
+  });
+
   it('needs an attachments directory', async () => {
     const server = await serving();
 
-    expect(
-      await server.error('get-attachment', { account: 'perso', uid: 1, part: '2', mode: 'file' }),
-    ).toBe('Saving attachments needs attachments.directory in the configuration file.');
+    expect(await server.error('save-attachment', { account: 'perso', uid: 1, part: '2' })).toBe(
+      'Saving attachments needs attachments.directory in the configuration file.',
+    );
     expect(server.client.calls).toStrictEqual([]);
   });
 });
@@ -297,7 +304,7 @@ describe('get-attachment, refusals', () => {
     );
   });
 
-  it.each([{ part: 'TEXT' }, { part: '2.' }, { part: '' }, { mode: 'link' }])(
+  it.each([{ part: 'TEXT' }, { part: '2.' }, { part: '' }, { mode: 'file' }])(
     'rejects %j',
     async (args) => {
       const server = await serving();
