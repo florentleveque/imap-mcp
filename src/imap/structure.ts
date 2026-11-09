@@ -22,8 +22,9 @@ const BODY_TYPES = new Set(['text/plain', 'text/html']);
 const leaves = (node: MessageStructureObject): MessageStructureObject[] =>
   node.childNodes && node.type !== 'message/rfc822' ? node.childNodes.flatMap(leaves) : [node];
 
+// An empty name counts as none: some mailers send name="" on the body.
 const filenameOf = (node: MessageStructureObject): string | undefined =>
-  node.dispositionParameters?.['filename'] ?? node.parameters?.['name'];
+  node.dispositionParameters?.['filename'] || node.parameters?.['name'] || undefined;
 
 // Senders mark attachments inconsistently: `inline` with a file name, or no
 // Content-Disposition at all. Anything that is not an unnamed text or HTML

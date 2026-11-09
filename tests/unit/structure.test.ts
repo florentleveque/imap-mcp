@@ -85,6 +85,30 @@ describe('messageParts', () => {
     });
   });
 
+  it('treats an empty file name as no name, so the body stays the body', () => {
+    const structure = {
+      type: 'text/plain',
+      size: 10,
+      dispositionParameters: { filename: '' },
+      parameters: { name: '' },
+    };
+
+    expect(messageParts(structure as never)).toStrictEqual({ text: '1', attachments: [] });
+  });
+
+  it('falls back to the Content-Type name when the disposition file name is empty', () => {
+    const structure = {
+      type: 'text/plain',
+      size: 10,
+      dispositionParameters: { filename: '' },
+      parameters: { name: 'notes.txt' },
+    };
+
+    expect(messageParts(structure as never).attachments).toStrictEqual([
+      { part: '1', filename: 'notes.txt', contentType: 'text/plain', size: 10, inline: false },
+    ]);
+  });
+
   it('keeps the first text of a message with several, and walks nested multiparts', () => {
     const leaf = (part: string, type: string) => ({ part, type, size: 10 });
     const structure = {
