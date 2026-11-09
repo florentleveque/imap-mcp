@@ -73,9 +73,9 @@ export function summarize(message: FetchMessageObject): MessageSummary {
 }
 
 /**
- * The newest `limit` messages matching `filters` in the open folder. SEARCH
- * returns UIDs only, so a large folder costs one list of numbers; only the
- * kept UIDs are fetched.
+ * The `limit` messages added last (highest UIDs) matching `filters` in the
+ * open folder. SEARCH returns UIDs only, so a large folder costs one list of
+ * numbers; only the kept UIDs are fetched.
  */
 export async function findMessages(
   client: MailClient,

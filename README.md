@@ -13,7 +13,7 @@ Work in progress: the read tools are in place; the password sources (keyring, pa
 
 **Messages**
 
-- `list-messages`: the newest messages of a folder, newest first, optionally only the unread ones or those received since a day.
+- `list-messages`: the messages added to a folder last, last added first, optionally only the unread ones or those received since a day.
 - `search-messages`: messages matching a sender, a recipient, a subject, body text or a received-day range.
 - `read-message`: the headers, the body as plain text (an HTML-only body is converted) and the list of attachments.
 - `get-attachment`: one attachment, in the result, up to a size limit.

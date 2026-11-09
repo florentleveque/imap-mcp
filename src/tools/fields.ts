@@ -17,7 +17,7 @@ export const limitField = z
   .min(1)
   .max(100)
   .default(20)
-  .describe('How many messages to return, newest first: 1 to 100, 20 by default.');
+  .describe('How many messages to return, last added first: 1 to 100, 20 by default.');
 
 export const unseenOnlyField = z
   .boolean()
