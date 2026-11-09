@@ -4,7 +4,7 @@ name: functional-testing
 description: Drive the inter-LLM functional test harness for this MCP server. Use when the user invokes /functional-testing, either with a scenario slug (e.g. `01-tool-surface`) or `all`. Reads STATE.md, produces a bridge prompt for the executing LLM, then ingests reports and writes verdicts. Never reads `expected.md` until the executor has already pushed its report.
 ---
 
-<!-- Adapted from fruggr/zendesk-mcp-server (MIT, see THIRD-PARTY-NOTICES.md). -->
+<!-- Adapted from third-party code (MIT, see THIRD-PARTY-NOTICES.md). -->
 
 # Functional testing: leading LLM protocol
 

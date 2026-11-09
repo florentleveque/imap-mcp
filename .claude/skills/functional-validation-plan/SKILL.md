@@ -4,7 +4,7 @@ name: functional-validation-plan
 description: Create a functional validation plan for a feature or bugfix. Use whenever you author an implementation plan, finish a feature/bugfix with runtime-observable behaviour, or prepare a PR that needs independent end-to-end validation, even when validation isn't explicitly asked for.
 ---
 
-<!-- Adapted from fruggr/zendesk-mcp-server (MIT, see THIRD-PARTY-NOTICES.md). -->
+<!-- Adapted from third-party code (MIT, see THIRD-PARTY-NOTICES.md). -->
 
 # Functional validation plan: author protocol
 

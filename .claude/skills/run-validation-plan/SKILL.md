@@ -4,7 +4,7 @@ name: run-validation-plan
 description: Execute a functional validation plan and report the findings. Use whenever you're asked to validate, QA, functionally verify, or check a feature/bugfix on a branch, or you're handed a functional validation plan to run, even when the skill isn't named.
 ---
 
-<!-- Adapted from fruggr/zendesk-mcp-server (MIT, see THIRD-PARTY-NOTICES.md). -->
+<!-- Adapted from third-party code (MIT, see THIRD-PARTY-NOTICES.md). -->
 
 # Run a validation plan: validator protocol
 

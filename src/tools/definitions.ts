@@ -1,4 +1,4 @@
-// Adapted from fruggr/zendesk-mcp-server (MIT, see THIRD-PARTY-NOTICES.md).
+// Adapted from third-party code (MIT, see THIRD-PARTY-NOTICES.md).
 import type { CallToolResult } from '@modelcontextprotocol/server';
 import type { z } from 'zod';
 
