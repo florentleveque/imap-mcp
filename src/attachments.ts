@@ -20,11 +20,26 @@ const isUnsafe = (char: string): boolean => {
   return code < 0x20 || code === 0x7f || FORBIDDEN.has(char);
 };
 
+// Real extensions are short; a longer one is cut like the rest of the name.
+const MAX_EXTENSION_BYTES = 32;
+
+/** The longest start of `text` that fits in `room` bytes, cut between characters. */
+function fitBytes(text: string, room: number): string {
+  let used = 0;
+  let end = 0;
+  for (const char of text) {
+    used += Buffer.byteLength(char);
+    if (used > room) break;
+    end += char.length;
+  }
+  return text.slice(0, end);
+}
+
 function shorten(name: string): string {
   const ext = extname(name);
-  const stem = Array.from(name.slice(0, name.length - ext.length));
-  while (Buffer.byteLength(stem.join('') + ext) > MAX_BYTES) stem.pop();
-  return stem.join('') + ext;
+  const kept = Buffer.byteLength(ext) <= MAX_EXTENSION_BYTES ? ext : '';
+  const stem = name.slice(0, name.length - kept.length);
+  return fitBytes(stem, MAX_BYTES - Buffer.byteLength(kept)) + kept;
 }
 
 /**

@@ -48,6 +48,26 @@ describe('safeFileName', () => {
   it('shortens a long name without extension', () => {
     expect(safeFileName('b'.repeat(300), 'fallback')).toBe('b'.repeat(200));
   });
+
+  it('keeps an extension of up to 32 bytes', () => {
+    const ext = `.${'x'.repeat(31)}`;
+
+    expect(safeFileName(`${'a'.repeat(300)}${ext}`, 'fallback')).toBe(`${'a'.repeat(168)}${ext}`);
+  });
+
+  it('cuts a longer extension as part of the name', () => {
+    const name = `report.${'y'.repeat(32)}${'z'.repeat(300)}`;
+
+    expect(safeFileName(name, 'fallback')).toBe(name.slice(0, 200));
+  });
+
+  it('shortens a name whose extension alone is past the limit', () => {
+    expect(safeFileName(`report.${'y'.repeat(250)}`, 'fallback')).toBe(`report.${'y'.repeat(193)}`);
+  });
+
+  it('shortens a very long name at once', () => {
+    expect(safeFileName(`${'a'.repeat(100_000)}.pdf`, 'fallback')).toBe(`${'a'.repeat(196)}.pdf`);
+  });
 });
 
 describe('saveUnique', () => {
