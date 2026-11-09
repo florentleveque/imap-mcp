@@ -29,6 +29,13 @@ const MAILBOX = [
   'latin1',
 ];
 
+// The build must be the commit recorded in state.json, which the validator
+// checks against the PR head: refuse a tree with uncommitted changes.
+const changes = execFileSync('git', ['status', '--porcelain'], { cwd: root }).toString();
+if (changes !== '') {
+  console.error(`Commit or stash these changes first, so the build matches HEAD:\n${changes}`);
+  process.exit(1);
+}
 execFileSync('pnpm', ['build'], { cwd: root, stdio: 'inherit' });
 const commit = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root }).toString().trim();
 
